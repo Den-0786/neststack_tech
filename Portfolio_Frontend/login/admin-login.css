@@ -1,0 +1,127 @@
+/* Admin Login Page */
+.admin-login {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 10px;
+    background: white; /* White background */
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.admin-login h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #006400; /* Deep green for the heading */
+}
+
+.admin-login form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* Reduced gap for tighter spacing */
+}
+
+.admin-login label {
+    font-size: 14px; /* Smaller label text */
+    color: #555; /* Default text color */
+    text-align: left;
+}
+
+.admin-login input {
+    padding: 10px; /* Smaller padding for inputs */
+    font-size: 14px; /* Smaller font size for inputs */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    width: 100%; /* Full width */
+    box-sizing: border-box; /* Ensure padding doesn't affect width */
+}
+
+.admin-login input:focus {
+    border-color: #006400; /* Deep green border on focus */
+}
+.password-toggle{
+    position: relative;
+}
+.toggle-icon {
+    position: absolute;
+    right: 10px;
+    top: 35px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666
+}
+.toggle-icon:hover{
+    color: #000
+}
+.admin-login button {
+    padding: 10px; /* Smaller padding for button */
+    font-size: 14px; /* Smaller font size for button */
+    color: white; /* White text */
+    background: #006400; /* Deep green background */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.admin-login button:hover {
+    background: #004d00; /* Darker green on hover */
+    transform: scale(0.9)
+}
+
+/* Optional: Add gold accents if needed */
+.admin-login .gold-accent {
+    color: #FFD700; /* Gold color for any accents */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .admin-login {
+        max-width: 50%; /* Adjust width for smaller screens */
+        margin: 20px auto; /* Reduce margin for smaller screens */
+        padding: 15px; /* Reduce padding for smaller screens */
+    }
+
+    .admin-login h2 {
+        font-size: 20px; /* Smaller heading for smaller screens */
+    }
+
+    .admin-login input {
+        padding: 8px; /* Even smaller padding for inputs */
+        font-size: 13px; /* Smaller font size for inputs */
+        
+    }
+
+    .admin-login button {
+        padding: 8px; /* Smaller button for smaller screens */
+        font-size: 13px; /* Smaller font size for button */
+        
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-login {
+        max-width: 100%; /* Full width on very small screens */
+        margin: 10px auto; /* Minimal margin */
+        padding: 10px; /* Minimal padding */
+    }
+
+    .admin-login h2 {
+        font-size: 18px; /* Even smaller heading */
+    }
+
+    .admin-login label {
+        font-size: 13px; /* Smaller label text */
+    }
+
+    .admin-login input {
+        padding: 5px 8px; /* Even smaller padding for inputs */
+        font-size: 12px; /* Even smaller font size for inputs */
+    }
+
+    .admin-login button {
+        padding: 5px 8px; /* Even smaller button */
+        font-size: 12px; /* Even smaller button text */
+    }
+}

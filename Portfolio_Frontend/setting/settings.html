@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Settings</title>
+    <link rel="stylesheet" href="../setting/settings.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+    <div class="settings-container">
+        <h2><span id="settings-icon" class="material-symbols-outlined">settings</span>Settings</h2>
+        <ul class="settings-list">
+            <li class="settings-item">
+                <span class="icon">🌙</span>
+                <span>Theme</span>
+                <div class="theme-toggle">
+                    <input type="checkbox" id="themeSwitch" class="toggle-input">
+                    <label for="themeSwitch" class="toggle-label"></label>
+                </div>
+            </li>
+            <li class="settings-item">
+                <span class="material-symbols-outlined">person</span>
+                <a href="profile-settings.html">Profile Settings</a>
+            </li>
+            <li class="settings-item">
+                <span class="material-symbols-outlined">notifications</span>
+                <a href="#" id="notificationToggle">Notification Settings</a>
+            </li>
+            <li class="settings-item">
+                <span class="material-symbols-outlined">info</span>
+                <a href="#" id="aboutInfo">About</a>
+            </li>
+            <li class="settings-item">
+                <span class="material-symbols-outlined">lock_reset</span>
+                <a href="change-password.html">Change Password</a>
+            </li>
+            <li class="settings-item">
+                <span class="material-symbols-outlined">vpn_key</span>
+                <a href="reset-password.html">Reset Password</a>
+            </li>
+            <li class="settings-item">
+                <span class="material-symbols-outlined">home</span>
+                <a href="../index.html">Home</a>
+            </li>
+            <li class="settings-item">
+                <span class="material-symbols-outlined">delete</span>
+                <button id="deleteAccountBtn">Delete Account</button>
+            </li>
+            <li class="settings-item">
+                <span class="material-symbols-outlined">logout</span>
+                <button id="logoutBtn">Logout</button>
+            </li>
+        </ul>
+        <!-- Toast Notification -->
+        <div id="toast" class="toast">
+            <span id="toastMessage"></span>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Inject the settings icon using Lucide
+            const settingsIcon = document.getElementById("settings-icon");
+            settingsIcon.innerHTML = '<i data-lucide="settings"></i>';
+            
+            // Initialize all Lucide icons
+            lucide.createIcons();
+        });
+    </script>
+    <script src="../setting/settings.js"></script>
+</body>
+</html>

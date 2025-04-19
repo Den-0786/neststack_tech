@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dennis Opoku Amponsah | Contact</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="../contact/contact.css">
+    <link rel="icon" type="image/x-icon" href="../portimages/Dennis2.JPG">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <a href="../index.html" class="logo">Dennis Opoku Amponsah</a>
+            
+            <input type="checkbox" id="menu-toggle">
+            <label for="menu-toggle" class="menu-icon">
+                <span class="material-symbols-outlined">menu</span>
+            </label>
+            
+            <nav>
+                <a href="../index.html">Home</a>
+                <a href="../abt/about.html">About</a>
+                <a href="../resume/resume.html">Resume</a>
+                <a href="../projects/projects.html">Projects</a>
+                <a href="../contact/contact.html" class="active">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="contact-section container">
+            <h2 class="section-title">Get In Touch</h2>
+            <p class="contact-intro">Have a project in mind or want to discuss potential opportunities? Feel free to reach out through any of these channels.</p>
+            
+            <div class="contact-methods">
+                <div class="contact-card">
+                    <span class="material-symbols-outlined contact-icon">call</span>
+                    <h3 class="contact-title">Phone</h3>
+                    <div class="contact-info">
+                        <p><a href="tel:+233245660786">+233 24 566 0786</a></p>
+                        <p><a href="tel:+233201041717">+233 20 104 1717</a></p>
+                    </div>
+                </div>
+                
+                <div class="contact-card">
+                    <span class="material-symbols-outlined contact-icon">mail</span>
+                    <h3 class="contact-title">Email</h3>
+                    <div class="contact-info">
+                        <p><a href="mailto:dennisopokuamponsah86@gmail.com">dennisopokuamponsah86@gmail.com</a></p>
+                    </div>
+                </div>
+                
+                <div class="contact-card">
+                    <span class="material-symbols-outlined contact-icon">location_on</span>
+                    <h3 class="contact-title">Address</h3>
+                    <div class="contact-info">
+                        <p>AK-381-1792</p>
+                        <p>Kumasi, Atonsu-Gyinyase</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="social-links">
+                <a href="https://x.com/DennisOpok35210" class="social-link" target="_blank" aria-label="Twitter">
+                    <span class="material-symbols-outlined">chat</span>
+                </a>
+                <a href="https://www.instagram.com/opoku2102/" class="social-link" target="_blank" aria-label="Instagram">
+                    <span class="material-symbols-outlined">photo_camera</span>
+                </a>
+                <a href="https://www.linkedin.com/in/dennis-opoku-amponsah-3911aa31b" class="social-link" target="_blank" aria-label="LinkedIn">
+                    <span class="material-symbols-outlined">work</span>
+                </a>
+                <a href="https://www.facebook.com/profile.php?id=100085692115198&mibextid=LQQj4d" class="social-link" target="_blank" aria-label="Facebook">
+                    <span class="material-symbols-outlined">thumb_up</span>
+                </a>
+                <a href="https://wa.me/233245660786" class="social-link" target="_blank" aria-label="WhatsApp">
+                    <span class="material-symbols-outlined">sms</span>
+                </a>
+            </div>
+            
+            <div class="contact-form">
+                <h3 class="section-title" style="font-size: 1.5rem;">Send Me a Message</h3>
+                <form action="submit.php" method="post">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Your Message</label>
+                        <textarea id="message" name="message" class="form-control" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">
+                        <span class="material-symbols-outlined" style="vertical-align: middle;">send</span>
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <p class="copyright">&copy; 2025 Dennis Opoku Amponsah. All rights reserved.</p>
+            <p>Designed with <span class="material-symbols-outlined" style="font-size: 1rem; vertical-align: middle;">favorite</span> by Dennis</p>
+        </div>
+    </footer>
+
+    <script src="../contact/contact.js"></script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="../dashboard/admin-dashboard.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Panel</h2>
+            </div>
+            <div id="sidebarHandle" class="sidebar-handle">
+                <span class="material-symbols-outlined">right_panel_open</span>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="../index.html" title="Home">
+                            <span class="material-symbols-outlined">home</span>
+                            <span class="text">Home</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#dashboard" title="Dashboard">
+                            <span class="material-symbols-outlined">dashboard</span>
+                            <span class="text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#skills" title="Skills">
+                            <span class="material-symbols-outlined">code</span>
+                            <span class="text">Skills</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#projects" title="Projects">
+                            <span class="material-symbols-outlined">work</span>
+                            <span class="text">Projects</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#contacts" title="Messages">
+                            <span class="material-symbols-outlined">mail</span>
+                            <span class="text">Messages</span>
+                            <span class="notification-badge">24</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#subscriptions" title="Subscribers">
+                            <span class="material-symbols-outlined">notifications</span>
+                            <span class="text">Subscribers</span>
+                            <span class="notification-badge">5</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../setting/settings.html" title="Settings">
+                            <span class="material-symbols-outlined">settings</span>
+                            <span class="text">Settings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <hr>
+                        <a href="#" id="logoutBtn" title="Logout">
+                            <span class="material-symbols-outlined">logout</span>
+                            <span class="text">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Welcome Header -->
+            <header class="dashboard-header">
+                <h1 id="welcomeMessage">Welcome back, Admin!</h1>
+                <p>You have <span id="messageCount">24</span> new messages and <span id="notificationCount">5</span> new notifications.</p>
+            </header>
+            
+            <!-- Stats Cards Row -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <h3>Total Projects</h3>
+                    <div class="stat-value" id="totalProjects">15</div>
+                    <div class="stat-change positive">+8.5%</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Messages</h3>
+                    <div class="stat-value" id="totalMessages">24</div>
+                    <div class="stat-change negative">-3.5%</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Subscribers</h3>
+                    <div class="stat-value" id="totalSubscribers">156</div>
+                    <div class="stat-change positive">+5.5%</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Skills</h3>
+                    <div class="stat-value" id="totalSkills">12</div>
+                    <div class="stat-change positive">+2.0%</div>
+                </div>
+            </div>
+
+            <!-- Two Column Layout -->
+            <div class="two-column-layout">
+                <!-- Left Column -->
+                <div class="column">
+                    <!-- Recent Projects -->
+                    <section id="projects" class="dashboard-section">
+                        <h3>Recent Projects</h3>
+                        <div id="projectsList" class="items-list"></div>
+                        <button id="addProjectBtn" class="add-btn">
+                            <span class="material-symbols-outlined">add</span> Add Project
+                        </button>
+                    </section>
+
+                    <!-- Visitor Analytics -->
+                    <section class="dashboard-section">
+                        <h3>Visitor Analytics</h3>
+                        <div class="chart-placeholder">
+                            <p>Chart showing monthly visitors</p>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right Column -->
+                <div class="column">
+                    <!-- Recent Messages -->
+                    <section id="contacts" class="dashboard-section">
+                        <h3>Recent Messages</h3>
+                        <div id="contactsList" class="items-list"></div>
+                        <button id="addMessageBtn" class="add-btn">
+                            <span class="material-symbols-outlined">add</span> Reply to Message
+                        </button>
+                    </section>
+
+                    <!-- Calendar -->
+                    <section class="dashboard-section">
+                        <h3>Calendar</h3>
+                        <div id="calendar"></div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Toast Notification -->
+            <div id="toast" class="toast">
+                <span id="toastMessage"></span>
+            </div>
+        </main>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modalTitle">Edit Item</h2>
+            <form id="editForm">
+                <div id="modalFields"></div>
+                <button type="submit" class="save-btn">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Modal -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <span class="close-add-modal">&times;</span>
+            <h2 id="addModalTitle">Add New Item</h2>
+            <form id="addForm">
+                <div id="addModalFields"></div>
+                <button type="submit" class="save-btn">Add Item</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="../dashboard/admin-dashboard.js"></script>
+</body>
+</html>
