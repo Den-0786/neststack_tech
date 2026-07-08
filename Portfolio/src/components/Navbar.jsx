@@ -42,7 +42,7 @@ export default function Navbar() {
         </div>
 
         <Link to="/login" className="w-8 h-8 rounded-full overflow-hidden border-2 border-gray-300 hover:border-accent transition-colors">
-          <img src={data.bio.avatar} alt={data.bio.name} className="w-full h-full object-cover" />
+          <img src={data.bio.avatar || '/portimages/abouttemp.jpeg'} alt={data.bio.name || 'User'} className="w-full h-full object-cover" />
         </Link>
       </nav>
 
