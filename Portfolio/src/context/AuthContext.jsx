@@ -14,6 +14,35 @@ export function AuthProvider({ children }) {
     }
   })
 
+  // Auto-logout after 5 minutes of inactivity
+  useEffect(() => {
+    let timeout
+
+    function resetTimer() {
+      clearTimeout(timeout)
+      if (auth.isAuthenticated) {
+        timeout = setTimeout(() => {
+          logout()
+        }, 5 * 60 * 1000) // 5 minutes
+      }
+    }
+
+    function handleActivity() {
+      resetTimer()
+    }
+
+    // Track user activity
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click']
+    events.forEach(event => window.addEventListener(event, handleActivity))
+
+    resetTimer()
+
+    return () => {
+      clearTimeout(timeout)
+      events.forEach(event => window.removeEventListener(event, handleActivity))
+    }
+  }, [auth.isAuthenticated])
+
   useEffect(() => {
     localStorage.setItem(AUTH_KEY, JSON.stringify(auth))
   }, [auth])
