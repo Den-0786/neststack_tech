@@ -2,13 +2,19 @@ import { createContext, useContext, useEffect, useState } from 'react'
 
 const ThemeContext = createContext({ light: false, toggle: () => {} })
 
+const THEME_KEY = 'neststack_theme'
+
 function isDaytime() {
   const h = new Date().getHours()
   return h >= 6 && h < 18
 }
 
 export function ThemeProvider({ children }) {
-  const [light, setLight] = useState(!isDaytime)
+  const [light, setLight] = useState(() => {
+    const saved = localStorage.getItem(THEME_KEY)
+    if (saved !== null) return saved === 'true'
+    return !isDaytime()
+  })
 
   useEffect(() => {
     const msUntilNextHour = () => {
@@ -35,6 +41,7 @@ export function ThemeProvider({ children }) {
       document.documentElement.classList.add('theme-dark')
       document.documentElement.classList.remove('theme-light')
     }
+    localStorage.setItem(THEME_KEY, light.toString())
   }, [light])
 
   return (
