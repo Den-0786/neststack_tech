@@ -56,7 +56,7 @@ export default function OverviewTab() {
   const { data } = usePortfolio()
   const light = useDashTheme()
   const [hoveredStream, setHoveredStream] = useState(null)
-  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 })
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0, flip: false })
   const card = light ? 'bg-white border-gray-200' : 'bg-site-card border-site-border'
   const label = light ? 'text-gray-500' : 'text-site-muted'
   const heading = light ? 'text-gray-900' : 'text-white'
@@ -128,7 +128,9 @@ export default function OverviewTab() {
               const dataIndex = Math.round(relativeX / xStep)
               const clampedIndex = Math.max(0, Math.min(streamLayers[0].data.length - 1, dataIndex))
               setHoveredStream(clampedIndex)
-              setTooltipPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+              const screenMidpoint = window.innerWidth / 2
+              const flip = e.clientX > screenMidpoint
+              setTooltipPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top, flip })
             }}
             onMouseLeave={() => setHoveredStream(null)}
           >
@@ -177,9 +179,9 @@ export default function OverviewTab() {
             <div 
               className={`absolute px-3 py-2 rounded text-xs font-mono z-10 pointer-events-none ${light ? 'bg-black text-white' : 'bg-white text-black'}`}
               style={{ 
-                left: tooltipPosition.x + 10, 
+                left: tooltipPosition.flip ? tooltipPosition.x - 10 : tooltipPosition.x + 10,
                 top: tooltipPosition.y - 10,
-                transform: 'translate(0, -100%)'
+                transform: tooltipPosition.flip ? 'translate(-100%, -100%)' : 'translate(0, -100%)'
               }}
             >
               {streamLayers.map(layer => (
