@@ -109,7 +109,7 @@ export default function WorkSection() {
         <div className={`mt-10 border p-8 text-center ${light ? 'border-gray-200 bg-white' : 'border-site-border bg-site-card'}`}>
           <h3 className={`text-3xl font-black mb-2 ${light ? 'text-gray-900' : 'text-white'}`}>Ready to fortify your project?</h3>
           <p className={`text-sm mb-6 max-w-md mx-auto ${light ? 'text-gray-500' : 'text-gray-400'}`}>
-            {data.contact.availability}
+            {data.contact.availability || 'Currently accepting complex technical challenges.'}
           </p>
           <Link
             to="/login"

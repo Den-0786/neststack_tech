@@ -34,7 +34,7 @@ function Sidebar({ active, onNav, collapsed, onToggleCollapse, avatar, name, lig
         </div>
         {(!collapsed || mobile) && (
           <div className="overflow-hidden">
-            <p className={`font-mono text-xs font-bold truncate ${light ? 'text-gray-900' : 'text-white'}`}>{name.split(' ')[0]}</p>
+            <p className={`font-mono text-xs font-bold truncate ${light ? 'text-gray-900' : 'text-white'}`}>{name?.split(' ')[0] || 'Admin'}</p>
             <p className={`font-mono text-[10px] truncate ${light ? 'text-neon-light' : 'text-neon'}`}>Admin</p>
           </div>
         )}
