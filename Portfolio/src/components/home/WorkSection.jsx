@@ -40,9 +40,9 @@ export default function WorkSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Reveal direction="up" delay={0}>
           <div className={`border group hover:border-neon/40 transition-colors ${light ? 'border-gray-200 bg-white' : 'border-site-border bg-site-card'}`}>
-            {featured.img ? (
+            {featured.image ? (
               <img
-                src={featured.img}
+                src={featured.image}
                 alt={featured.title}
                 className="w-full h-56 object-cover grayscale group-hover:grayscale-0 transition-all"
               />
@@ -59,9 +59,11 @@ export default function WorkSection() {
                 <span className="font-mono text-xs text-site-muted">DASHBOARD_REV.01</span>
               </div>
               <h3 className={`font-bold text-xl mb-2 ${light ? 'text-gray-900' : 'text-white'}`}>{featured.title}</h3>
-              <p className={`text-sm mb-4 ${light ? 'text-gray-500' : 'text-gray-400'}`}>{featured.desc}</p>
+              <p className={`text-sm mb-4 ${light ? 'text-gray-500' : 'text-gray-400'}`}>{featured.description}</p>
               <a
-                href={featured.github}
+                href={featured.github_url || featured.live_url}
+                target="_blank"
+                rel="noopener noreferrer"
                 className={`font-mono text-xs flex items-center gap-1 hover:underline uppercase tracking-widest ${light ? 'text-neon-light' : 'text-neon'}`}
               >
                 View Project <ArrowUpRight size={12} />
@@ -76,9 +78,9 @@ export default function WorkSection() {
               <div
                 className={`border p-4 group hover:border-neon/40 transition-colors flex gap-4 items-start ${light ? 'border-gray-200 bg-white' : 'border-site-border bg-site-card'}`}
               >
-                {p.img ? (
+                {p.image ? (
                   <img
-                    src={p.img}
+                    src={p.image}
                     alt={p.title}
                     className="w-24 h-16 object-cover shrink-0 grayscale group-hover:grayscale-0 transition-all"
                   />
@@ -94,9 +96,9 @@ export default function WorkSection() {
                     </span>
                   </div>
                   <h4 className={`font-bold text-sm truncate ${light ? 'text-gray-900' : 'text-white'}`}>{p.title}</h4>
-                  <p className={`text-xs mt-0.5 line-clamp-2 ${light ? 'text-gray-500' : 'text-gray-400'}`}>{p.desc}</p>
+                  <p className={`text-xs mt-0.5 line-clamp-2 ${light ? 'text-gray-500' : 'text-gray-400'}`}>{p.description}</p>
                 </div>
-                <a href={p.github} className="text-site-muted hover:text-neon shrink-0 transition-colors mt-1">
+                <a href={p.github_url || p.live_url} target="_blank" rel="noopener noreferrer" className="text-site-muted hover:text-neon shrink-0 transition-colors mt-1">
                   <ArrowUpRight size={15} />
                 </a>
               </div>

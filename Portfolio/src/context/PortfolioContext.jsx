@@ -109,11 +109,12 @@ export function PortfolioProvider({ children }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: project.title,
-          description: project.desc,
-          image: project.img,
-          tags: project.tags,
-          githubUrl: project.github,
-          liveUrl: project.liveUrl || '#',
+          description: project.desc || '',
+          image: project.img || '',
+          tags: project.tags || [],
+          github_url: project.github || '',
+          live_url: project.liveUrl || '#',
+          status: project.status || 'ACTIVE',
         }),
       })
       if (response.ok) {

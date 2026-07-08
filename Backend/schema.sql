@@ -48,6 +48,7 @@ CREATE TABLE projects (
   tags VARCHAR(MAX),
   github_url TEXT,
   live_url TEXT,
+  status VARCHAR(50) DEFAULT 'ACTIVE',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

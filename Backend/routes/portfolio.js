@@ -97,10 +97,10 @@ router.delete('/skills/:id', async (req, res) => {
 // Projects CRUD
 router.post('/projects', async (req, res) => {
   try {
-    const { title, description, image, tags, githubUrl, liveUrl } = req.body
+    const { title, description, image, tags, github_url, live_url, status } = req.body
     const result = await pool.query(
-      'INSERT INTO projects (title, description, image, tags, github_url, live_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-      [title, description, image, tags, githubUrl, liveUrl]
+      'INSERT INTO projects (title, description, image, tags, github_url, live_url, status) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+      [title, description, image, tags, github_url, live_url, status || 'ACTIVE']
     )
     res.json(result.rows[0])
   } catch (error) {

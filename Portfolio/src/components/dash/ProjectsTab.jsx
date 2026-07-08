@@ -59,22 +59,43 @@ export default function ProjectsTab() {
       {showForm && (
         <form onSubmit={handleAdd} className={`border border-neon/30 p-5 space-y-3 ${light ? 'bg-white' : 'bg-site-card'}`}>
           <p className={`font-mono text-xs uppercase tracking-widest mb-3 ${accent}`}>[NEW_PROJECT]</p>
-          {[
-            { key: 'title', placeholder: 'Project title', label: 'Title' },
-            { key: 'desc', placeholder: 'Short description', label: 'Description' },
-            { key: 'tags', placeholder: 'React, Node.js, AWS', label: 'Tech Stack (comma separated)' },
-            { key: 'github', placeholder: 'https://github.com/...', label: 'GitHub / Live URL' },
-          ].map(({ key, placeholder, label }) => (
-            <div key={key}>
-              <label className={`font-mono text-xs uppercase tracking-widest block mb-1 ${lbl}`}>{label}</label>
+          <div>
+              <label className={`font-mono text-xs uppercase tracking-widest block mb-1 ${lbl}`}>Title</label>
               <input
-                value={form[key]}
-                onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
-                placeholder={placeholder}
+                value={form.title}
+                onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                placeholder="Project title"
                 className={`w-full px-3 py-2 text-sm font-mono focus:outline-none focus:border-neon/50 transition-colors border ${input}`}
               />
             </div>
-          ))}
+            <div>
+              <label className={`font-mono text-xs uppercase tracking-widest block mb-1 ${lbl}`}>Description</label>
+              <textarea
+                value={form.desc}
+                onChange={(e) => setForm((f) => ({ ...f, desc: e.target.value }))}
+                placeholder="Short description"
+                rows={4}
+                className={`w-full px-3 py-2 text-sm font-mono focus:outline-none focus:border-neon/50 transition-colors border ${input} resize-y`}
+              />
+            </div>
+            <div>
+              <label className={`font-mono text-xs uppercase tracking-widest block mb-1 ${lbl}`}>Tech Stack (comma separated)</label>
+              <input
+                value={form.tags}
+                onChange={(e) => setForm((f) => ({ ...f, tags: e.target.value }))}
+                placeholder="React, Node.js, AWS"
+                className={`w-full px-3 py-2 text-sm font-mono focus:outline-none focus:border-neon/50 transition-colors border ${input}`}
+              />
+            </div>
+            <div>
+              <label className={`font-mono text-xs uppercase tracking-widest block mb-1 ${lbl}`}>GitHub / Live URL</label>
+              <input
+                value={form.github}
+                onChange={(e) => setForm((f) => ({ ...f, github: e.target.value }))}
+                placeholder="https://github.com/..."
+                className={`w-full px-3 py-2 text-sm font-mono focus:outline-none focus:border-neon/50 transition-colors border ${input}`}
+              />
+            </div>
           <div>
             <label className={`font-mono text-xs uppercase tracking-widest block mb-2 ${lbl}`}>Project Image — Upload from Machine</label>
             <S3ImageUpload
@@ -134,8 +155,8 @@ export default function ProjectsTab() {
           filtered.map((p) => (
             <div key={p.id} className={`grid grid-cols-[60px_1fr_auto] px-4 py-3 border-b items-start gap-2 ${light ? 'border-gray-100' : 'border-site-border/50'}`}>
               <div className={`w-12 h-10 border overflow-hidden shrink-0 ${light ? 'bg-gray-100 border-gray-200' : 'bg-site-bg border-site-border'}`}>
-                {p.img ? (
-                  <img src={p.img} alt={p.title} className="w-full h-full object-cover" />
+                {p.image ? (
+                  <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <span className="font-mono text-[8px] text-site-muted">N/A</span>
@@ -144,7 +165,7 @@ export default function ProjectsTab() {
               </div>
               <div>
                 <p className={`font-mono text-xs font-semibold ${heading}`}>{p.title}</p>
-                <p className={`font-mono text-[10px] mt-0.5 line-clamp-1 ${lbl}`}>{p.desc}</p>
+                <p className={`font-mono text-[10px] mt-0.5 line-clamp-1 ${lbl}`}>{p.description}</p>
                 <span className={`inline-block font-mono text-[9px] border px-1.5 py-0.5 mt-1 ${statusStyle(p.status)}`}>
                   {p.status}
                 </span>
