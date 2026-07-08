@@ -19,7 +19,7 @@ export function ThemeProvider({ children }) {
     let timeout
     function schedule() {
       timeout = setTimeout(() => {
-        setLight(isDaytime())
+        setLight(!isDaytime())
         schedule()
       }, msUntilNextHour())
     }
