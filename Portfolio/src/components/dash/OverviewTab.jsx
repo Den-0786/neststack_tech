@@ -6,71 +6,49 @@ import { useState } from 'react'
 const streamLayers = [
   {
     name: 'Organic Traffic',
-    color: 'rgba(139, 92, 246, 0.6)',
+    color: 'rgba(139, 92, 246, 0.5)',
     stroke: 'rgba(139, 92, 246, 0.8)',
-    data: [15, 25, 20, 35, 30, 45, 40, 50, 45, 55, 50, 60],
+    data: [25, 40, 35, 55, 45, 65, 55, 75, 65, 85, 75, 95],
   },
   {
     name: 'Direct Traffic',
-    color: 'rgba(59, 130, 246, 0.6)',
+    color: 'rgba(59, 130, 246, 0.5)',
     stroke: 'rgba(59, 130, 246, 0.8)',
-    data: [20, 30, 25, 40, 35, 50, 45, 55, 50, 60, 55, 65],
+    data: [35, 50, 45, 65, 55, 75, 65, 85, 75, 95, 85, 100],
   },
   {
     name: 'Referral Traffic',
-    color: 'rgba(34, 197, 94, 0.6)',
+    color: 'rgba(34, 197, 94, 0.5)',
     stroke: 'rgba(34, 197, 94, 0.8)',
-    data: [10, 20, 15, 25, 20, 35, 30, 40, 35, 45, 40, 50],
-  },
-  {
-    name: 'Social Traffic',
-    color: 'rgba(251, 146, 60, 0.6)',
-    stroke: 'rgba(251, 146, 60, 0.8)',
-    data: [5, 15, 10, 20, 15, 25, 20, 30, 25, 35, 30, 40],
+    data: [20, 35, 30, 50, 40, 60, 50, 70, 60, 80, 70, 85],
   },
 ]
 
-function generateStreamPath(data, width, height, offset = 0) {
+function generateWavePath(data, width, height, yOffset = 0) {
   const padding = 20
   const xStep = (width - padding * 2) / (data.length - 1)
-  const centerY = height / 2
+  const baseline = height - 20
   const maxVal = Math.max(...data)
-  const scale = (height * 0.15) / maxVal
+  const scale = (height * 0.6) / maxVal
 
-  let path = `M ${padding} ${centerY - offset}`
+  let path = `M ${padding} ${baseline}`
   
   for (let i = 0; i < data.length; i++) {
     const x = padding + i * xStep
-    const y = centerY - offset - data[i] * scale
+    const y = baseline - yOffset - data[i] * scale
     const nextX = padding + (i + 1) * xStep
-    const nextY = centerY - offset - (data[i + 1] || data[i]) * scale
+    const nextY = baseline - yOffset - (data[i + 1] || data[i]) * scale
     
     if (i < data.length - 1) {
-      const cp1x = x + xStep / 3
+      const cp1x = x + xStep / 2
       const cp1y = y
-      const cp2x = nextX - xStep / 3
+      const cp2x = nextX - xStep / 2
       const cp2y = nextY
       path += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${nextX} ${nextY}`
     }
   }
 
-  // Mirror the path for the bottom
-  for (let i = data.length - 1; i >= 0; i--) {
-    const x = padding + i * xStep
-    const y = centerY + offset + data[i] * scale
-    const prevX = padding + (i - 1) * xStep
-    const prevY = centerY + offset + (data[i - 1] || data[i]) * scale
-    
-    if (i > 0) {
-      const cp1x = x - xStep / 3
-      const cp1y = y
-      const cp2x = prevX + xStep / 3
-      const cp2y = prevY
-      path += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${prevX} ${prevY}`
-    }
-  }
-
-  path += ' Z'
+  path += ` L ${width - padding} ${baseline} Z`
   return path
 }
 
@@ -135,55 +113,71 @@ export default function OverviewTab() {
         </div>
 
         <div className="h-24 mt-4 relative">
-          <svg width="100%" height="100%" viewBox="0 0 600 100" preserveAspectRatio="none">
+          <svg 
+            width="100%" 
+            height="100%" 
+            viewBox="0 0 600 100" 
+            preserveAspectRatio="none"
+            onMouseMove={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect()
+              const x = (e.clientX - rect.left) / rect.width * 600
+              const padding = 20
+              const xStep = (600 - padding * 2) / (streamLayers[0].data.length - 1)
+              const relativeX = x - padding
+              const dataIndex = Math.round(relativeX / xStep)
+              const clampedIndex = Math.max(0, Math.min(streamLayers[0].data.length - 1, dataIndex))
+              setHoveredStream(clampedIndex)
+            }}
+            onMouseLeave={() => setHoveredStream(null)}
+          >
             {streamLayers.map((layer, layerIndex) => (
               <path
                 key={layer.name}
-                d={generateStreamPath(layer.data, 600, 100, layerIndex * 5)}
+                d={generateWavePath(layer.data, 600, 100, layerIndex * 8)}
                 fill={layer.color}
                 stroke={layer.stroke}
-                strokeWidth="0.5"
-                style={{ mixBlendMode: 'multiply' }}
+                strokeWidth="1"
               />
             ))}
-            {streamLayers.map((layer, layerIndex) => (
-              <g key={layer.name}>
-                {layer.data.map((value, i) => {
-                  const padding = 20
-                  const xStep = (600 - padding * 2) / (layer.data.length - 1)
-                  const x = padding + i * xStep
-                  const centerY = 50
-                  const offset = layerIndex * 5
+            {hoveredStream !== null && (
+              <g>
+                <line
+                  x1={20 + hoveredStream * ((600 - 40) / (streamLayers[0].data.length - 1))}
+                  y1={0}
+                  x2={20 + hoveredStream * ((600 - 40) / (streamLayers[0].data.length - 1))}
+                  y2={100}
+                  stroke={light ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)'}
+                  strokeWidth="1"
+                  strokeDasharray="4 4"
+                />
+                {streamLayers.map((layer, layerIndex) => {
+                  const x = 20 + hoveredStream * ((600 - 40) / (layer.data.length - 1))
+                  const baseline = 80
                   const maxVal = Math.max(...layer.data)
-                  const scale = (100 * 0.15) / maxVal
-                  const y = centerY - offset - value * scale
-                  
+                  const scale = 60 / maxVal
+                  const y = baseline - layerIndex * 8 - layer.data[hoveredStream] * scale
                   return (
                     <circle
-                      key={i}
+                      key={layerIndex}
                       cx={x}
                       cy={y}
-                      r={hoveredStream === `${layerIndex}-${i}` ? 4 : 2}
+                      r={5}
                       fill={layer.stroke}
-                      className="cursor-pointer transition-all"
-                      onMouseEnter={() => setHoveredStream(`${layerIndex}-${i}`)}
-                      onMouseLeave={() => setHoveredStream(null)}
+                      stroke={light ? 'white' : 'black'}
+                      strokeWidth="2"
                     />
                   )
                 })}
               </g>
-            ))}
+            )}
           </svg>
-          {hoveredStream !== null && (() => {
-            const [layerIndex, dataIndex] = hoveredStream.split('-').map(Number)
-            const layer = streamLayers[layerIndex]
-            const value = layer.data[dataIndex]
-            return (
-              <div className={`absolute top-0 left-1/2 -translate-x-1/2 mb-2 px-3 py-2 rounded text-xs font-mono whitespace-nowrap z-10 ${light ? 'bg-black text-white' : 'bg-white text-black'}`}>
-                {layer.name}: {value} requests
-              </div>
-            )
-          })()}
+          {hoveredStream !== null && (
+            <div className={`absolute top-2 right-2 px-3 py-2 rounded text-xs font-mono z-10 ${light ? 'bg-black text-white' : 'bg-white text-black'}`}>
+              {streamLayers.map(layer => (
+                <div key={layer.name}>{layer.name}: {layer.data[hoveredStream]} req</div>
+              ))}
+            </div>
+          )}
         </div>
         <div className="flex justify-between mt-2">
           {['00:00', '06:00', '12:00', '18:00', '23:59'].map((t) => (
