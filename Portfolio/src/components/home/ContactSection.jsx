@@ -158,14 +158,13 @@ export default function ContactSection() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className={`font-mono text-xs uppercase tracking-widest block mb-1 ${light ? 'text-gray-400' : 'text-site-muted'}`}>
-                      Identity_Name <span className="text-red-400">*</span>
+                      Name <span className="text-red-400">*</span>
                     </label>
                     <input
                       required
                       type="text"
                       value={form.name}
                       onChange={(e) => set('name', e.target.value)}
-                      placeholder="John Doe"
                       className={`w-full border px-4 py-3 text-sm font-mono focus:outline-none focus:border-neon/50 transition-colors ${light ? 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400' : 'bg-site-bg border-site-border text-white placeholder-site-muted'}`}
                     />
                   </div>
@@ -178,7 +177,6 @@ export default function ContactSection() {
                       type="email"
                       value={form.email}
                       onChange={(e) => set('email', e.target.value)}
-                      placeholder="contact@domain.com"
                       className={`w-full border px-4 py-3 text-sm font-mono focus:outline-none focus:border-neon/50 transition-colors ${light ? 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400' : 'bg-site-bg border-site-border text-white placeholder-site-muted'}`}
                     />
                   </div>
