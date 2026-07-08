@@ -92,14 +92,15 @@ export default function SettingsTab({ onClose }) {
 
   /* ── Contact ── */
   const [contact, setContact] = useState({
+    name: data.bio.name,
     phone: data.contact.phone1,
     email: data.contact.email,
     address: data.bio.location,
   })
   function saveContact(e) {
     e.preventDefault()
+    updateBio({ name: contact.name, location: contact.address })
     updateContact({ phone1: contact.phone, email: contact.email })
-    updateBio({ location: contact.address })
     flash()
   }
 
@@ -225,16 +226,22 @@ export default function SettingsTab({ onClose }) {
           <p className={`font-mono text-[10px] uppercase tracking-widest font-semibold mb-3 ${accent}`}>Contact Points</p>
           <form onSubmit={saveContact} className="space-y-3">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {[
-                { key: 'phone',   label: 'Phone',    placeholder: '+233 245 660 786' },
-                { key: 'email',   label: 'Email',    placeholder: 'you@domain.com' },
-                { key: 'address', label: 'Location', placeholder: 'City, Country' },
-              ].map(({ key, label, placeholder }) => (
-                <div key={key}>
-                  <label className={small_label}>{label}</label>
-                  <input value={contact[key]} onChange={(e) => setContact((c) => ({ ...c, [key]: e.target.value }))} placeholder={placeholder} className={inp_cls} />
-                </div>
-              ))}
+              <div>
+                <label className={small_label}>Name</label>
+                <input value={contact.name} onChange={(e) => setContact((c) => ({ ...c, name: e.target.value }))} placeholder="Your Name" className={inp_cls} />
+              </div>
+              <div>
+                <label className={small_label}>Location</label>
+                <input value={contact.address} onChange={(e) => setContact((c) => ({ ...c, address: e.target.value }))} placeholder="City, Country" className={inp_cls} />
+              </div>
+              <div>
+                <label className={small_label}>Phone</label>
+                <input value={contact.phone} onChange={(e) => setContact((c) => ({ ...c, phone: e.target.value }))} placeholder="+233 245 660 786" className={inp_cls} />
+              </div>
+              <div>
+                <label className={small_label}>Email</label>
+                <input value={contact.email} onChange={(e) => setContact((c) => ({ ...c, email: e.target.value }))} placeholder="you@domain.com" className={inp_cls} />
+              </div>
             </div>
             <button type="submit" className="bg-neon text-black font-mono font-bold text-xs uppercase tracking-widest px-8 py-2.5 hover:bg-neon-dim transition-colors">
               Save Contact
