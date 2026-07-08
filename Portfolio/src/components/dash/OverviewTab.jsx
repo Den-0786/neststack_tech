@@ -18,6 +18,50 @@ const streamData = [
   { time: '22:00', value: 95, label: 'Node Delta - 95 requests' },
 ]
 
+function generateStreamPath(data, width, height, color) {
+  const padding = 20
+  const xStep = (width - padding * 2) / (data.length - 1)
+  const centerY = height / 2
+  const maxVal = Math.max(...data.map(d => d.value))
+  const scale = (height * 0.35) / maxVal
+
+  let path = `M ${padding} ${centerY}`
+  
+  for (let i = 0; i < data.length; i++) {
+    const x = padding + i * xStep
+    const y = centerY - data[i].value * scale
+    const nextX = padding + (i + 1) * xStep
+    const nextY = centerY - (data[i + 1]?.value || data[i].value) * scale
+    
+    if (i < data.length - 1) {
+      const cp1x = x + xStep / 3
+      const cp1y = y
+      const cp2x = nextX - xStep / 3
+      const cp2y = nextY
+      path += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${nextX} ${nextY}`
+    }
+  }
+
+  // Mirror the path for the bottom
+  for (let i = data.length - 1; i >= 0; i--) {
+    const x = padding + i * xStep
+    const y = centerY + data[i].value * scale
+    const prevX = padding + (i - 1) * xStep
+    const prevY = centerY + (data[i - 1]?.value || data[i].value) * scale
+    
+    if (i > 0) {
+      const cp1x = x - xStep / 3
+      const cp1y = y
+      const cp2x = prevX + xStep / 3
+      const cp2y = prevY
+      path += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${prevX} ${prevY}`
+    }
+  }
+
+  path += ' Z'
+  return path
+}
+
 export default function OverviewTab() {
   const { data } = usePortfolio()
   const light = useDashTheme()
@@ -78,27 +122,49 @@ export default function OverviewTab() {
           </div>
         </div>
 
-        <div className="h-24 flex items-end gap-0.5 mt-4 relative">
-          {streamData.map((stream, i) => (
-            <div
-              key={i}
-              className="flex-1 rounded-sm relative group cursor-pointer transition-all hover:opacity-80"
-              style={{
-                height: `${stream.value}%`,
-                background: stream.value >= 70
-                  ? 'rgba(57,255,20,0.7)'
-                  : light ? 'rgba(0,100,0,0.15)' : 'rgba(57,255,20,0.15)',
-              }}
-              onMouseEnter={() => setHoveredStream(i)}
-              onMouseLeave={() => setHoveredStream(null)}
-            >
-              {hoveredStream === i && (
-                <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 rounded text-xs font-mono whitespace-nowrap z-10 ${light ? 'bg-black text-white' : 'bg-white text-black'}`}>
-                  {stream.label}
-                </div>
-              )}
+        <div className="h-24 mt-4 relative">
+          <svg width="100%" height="100%" viewBox="0 0 600 100" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="streamGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor={light ? 'rgba(0,100,0,0.3)' : 'rgba(57,255,20,0.3)'} />
+                <stop offset="50%" stopColor={light ? 'rgba(0,150,0,0.5)' : 'rgba(57,255,20,0.5)'} />
+                <stop offset="100%" stopColor={light ? 'rgba(0,100,0,0.3)' : 'rgba(57,255,20,0.3)'} />
+              </linearGradient>
+            </defs>
+            <path
+              d={generateStreamPath(streamData, 600, 100)}
+              fill="url(#streamGradient)"
+              stroke={light ? 'rgba(0,100,0,0.6)' : 'rgba(57,255,20,0.6)'}
+              strokeWidth="1"
+            />
+            {streamData.map((stream, i) => {
+              const padding = 20
+              const xStep = (600 - padding * 2) / (streamData.length - 1)
+              const x = padding + i * xStep
+              const centerY = 50
+              const maxVal = Math.max(...streamData.map(d => d.value))
+              const scale = (100 * 0.35) / maxVal
+              const y = centerY - stream.value * scale
+              
+              return (
+                <circle
+                  key={i}
+                  cx={x}
+                  cy={y}
+                  r={hoveredStream === i ? 6 : 3}
+                  fill={light ? '#006400' : '#39ff14'}
+                  className="cursor-pointer transition-all"
+                  onMouseEnter={() => setHoveredStream(i)}
+                  onMouseLeave={() => setHoveredStream(null)}
+                />
+              )
+            })}
+          </svg>
+          {hoveredStream !== null && (
+            <div className={`absolute top-0 left-1/2 -translate-x-1/2 mb-2 px-3 py-2 rounded text-xs font-mono whitespace-nowrap z-10 ${light ? 'bg-black text-white' : 'bg-white text-black'}`}>
+              {streamData[hoveredStream].label}
             </div>
-          ))}
+          )}
         </div>
         <div className="flex justify-between mt-2">
           {['00:00', '06:00', '12:00', '18:00', '23:59'].map((t) => (
