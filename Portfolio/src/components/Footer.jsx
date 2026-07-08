@@ -11,7 +11,7 @@ export default function Footer() {
           TECHNICAL ECOSYSTEM
         </span>
         <span className="font-mono text-xs text-gray-400">
-          © {year} {data.bio.name.toUpperCase()}. ALL RIGHTS RESERVED.
+          © {year} {data.bio.name?.toUpperCase() || 'NestStack_Tech'}. ALL RIGHTS RESERVED.
         </span>
         <div className="flex gap-6">
           {['Documentation', 'Privacy', 'Network Status'].map((item) => (

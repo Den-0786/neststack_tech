@@ -16,7 +16,7 @@ export default function SiteFooter() {
         <div className="flex flex-col md:flex-row items-center md:items-center gap-1 md:gap-2">
           <span className={`font-mono font-black text-sm ${light ? 'text-gray-900' : 'text-white'}`}>NestStack_Tech</span>
           <span className={`font-mono text-[10px] text-center md:text-left ${light ? 'text-gray-500' : 'text-site-muted'}`}>
-            // &copy; {year} {data.bio.name.toUpperCase()}. ALL RIGHTS RESERVED.
+            // &copy; {year} {data.bio.name?.toUpperCase() || 'NestStack_Tech'}. ALL RIGHTS RESERVED.
           </span>
         </div>
         </Reveal>
