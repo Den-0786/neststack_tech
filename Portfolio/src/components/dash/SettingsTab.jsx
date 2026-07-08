@@ -117,18 +117,29 @@ export default function SettingsTab({ onClose }) {
   }
 
   /* ── Admin credentials ── */
-  const HARDCODED_PASS = 'NestStack26'
   const [profile, setProfile] = useState({ username: data.bio.name, pin: '', oldPassword: '', password: '' })
   const [credError, setCredError] = useState('')
-  function saveProfile(e) {
+  async function saveProfile(e) {
     e.preventDefault()
     if (profile.password || profile.oldPassword) {
-      if (profile.oldPassword !== HARDCODED_PASS) {
-        setCredError('Old password is incorrect.')
-        return
-      }
-      if (profile.password.length < 8) {
-        setCredError('New password must be at least 8 characters.')
+      const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+      try {
+        const response = await fetch(`${API_BASE}/api/auth/change-password`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: profile.username,
+            oldPassword: profile.oldPassword,
+            newPassword: profile.password,
+          }),
+        })
+        const data = await response.json()
+        if (!response.ok) {
+          setCredError(data.error || 'Failed to change password')
+          return
+        }
+      } catch (error) {
+        setCredError('Failed to change password')
         return
       }
     }

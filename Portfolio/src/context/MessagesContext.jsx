@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 
 const MessagesContext = createContext(null)
 
@@ -6,69 +6,106 @@ export function useMessages() {
   return useContext(MessagesContext)
 }
 
-const seed = [
-  {
-    id: 'sys-001',
-    from: 'SOC_Alert_042',
-    email: 'soc@core-os.net',
-    subject: 'Critical: Port 22 Scan Detected',
-    body: `Port 22 (SSH): The frequency of requests suggests a dictionary-based brute force attempt. Source IP 192.168.1.184 has been temporarily blacklisted for 3600 seconds.\n\n$ grep "Failed password" /var/log/auth.log\nMay 12 12:05:04 core-os sshd[1234]: Failed password for root from 192.168.1.184 port 48282\nMay 12 12:05:41 core-os sshd[1240]: Failed password for root from 192.168.1.184 port 49118\n\nRecommended Action: Review SSH configurations and implement fail2ban with stricter jail requirements.`,
-    time: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-    type: 'alert',
-    status: 'unread',
-    attachments: [],
-  },
-  {
-    id: 'sys-002',
-    from: 'TryHackMe Bot',
-    email: 'noreply@tryhackme.com',
-    subject: 'New streak — 42 days',
-    body: 'You maintained your hacking streak for 42 days. Keep it up! Log in to claim your badge.',
-    time: new Date(Date.now() - 1000 * 60 * 90).toISOString(),
-    type: 'normal',
-    status: 'read',
-    attachments: [],
-  },
-]
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
 export function MessagesProvider({ children }) {
-  const [messages, setMessages] = useState(seed)
+  const [messages, setMessages] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  function addMessage({ from, email, subject, body, attachments = [] }) {
-    const msg = {
-      id: `msg-${Date.now()}`,
-      from,
-      email,
-      subject,
-      body,
-      time: new Date().toISOString(),
-      type: attachments.length > 0 ? 'document' : 'normal',
-      status: 'unread',
-      attachments,
+  useEffect(() => {
+    fetchMessages()
+  }, [])
+
+  async function fetchMessages() {
+    try {
+      const response = await fetch(`${API_BASE}/api/messages`)
+      const data = await response.json()
+      if (response.ok) {
+        setMessages(data)
+      }
+    } catch (error) {
+      console.error('Failed to fetch messages:', error)
+    } finally {
+      setLoading(false)
     }
-    setMessages((prev) => [msg, ...prev])
   }
 
-  function markRead(id) {
-    setMessages((prev) =>
-      prev.map((m) => (m.id === id && m.status === 'unread' ? { ...m, status: 'read' } : m))
-    )
+  async function addMessage({ from, email, subject, body, attachments = [] }) {
+    try {
+      const response = await fetch(`${API_BASE}/api/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from_name: from,
+          email,
+          subject,
+          message: body,
+          type: attachments.length > 0 ? 'document' : 'general',
+          attachments,
+        }),
+      })
+      if (response.ok) {
+        await fetchMessages()
+      }
+    } catch (error) {
+      console.error('Failed to add message:', error)
+    }
   }
 
-  function markAttended(id) {
-    setMessages((prev) =>
-      prev.map((m) => (m.id === id ? { ...m, status: 'attended' } : m))
-    )
+  async function markRead(id) {
+    try {
+      const response = await fetch(`${API_BASE}/api/messages/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'read' }),
+      })
+      if (response.ok) {
+        await fetchMessages()
+      }
+    } catch (error) {
+      console.error('Failed to mark message as read:', error)
+    }
   }
 
-  function markAllRead() {
-    setMessages((prev) =>
-      prev.map((m) => (m.status === 'unread' ? { ...m, status: 'read' } : m))
-    )
+  async function markAttended(id) {
+    try {
+      const response = await fetch(`${API_BASE}/api/messages/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'attended' }),
+      })
+      if (response.ok) {
+        await fetchMessages()
+      }
+    } catch (error) {
+      console.error('Failed to mark message as attended:', error)
+    }
   }
 
-  function deleteMessage(id) {
-    setMessages((prev) => prev.filter((m) => m.id !== id))
+  async function markAllRead() {
+    try {
+      const response = await fetch(`${API_BASE}/api/messages/read/all`, {
+        method: 'PATCH',
+      })
+      if (response.ok) {
+        await fetchMessages()
+      }
+    } catch (error) {
+      console.error('Failed to mark all as read:', error)
+    }
+  }
+
+  async function deleteMessage(id) {
+    try {
+      const response = await fetch(`${API_BASE}/api/messages/${id}`, {
+        method: 'DELETE',
+      })
+      if (response.ok) {
+        await fetchMessages()
+      }
+    } catch (error) {
+      console.error('Failed to delete message:', error)
+    }
   }
 
   const unreadCount = messages.filter((m) => m.status === 'unread').length
@@ -77,7 +114,7 @@ export function MessagesProvider({ children }) {
 
   return (
     <MessagesContext.Provider
-      value={{ messages, addMessage, markRead, markAttended, markAllRead, deleteMessage, unreadCount, readCount, attendedCount }}
+      value={{ messages, loading, addMessage, markRead, markAttended, markAllRead, deleteMessage, unreadCount, readCount, attendedCount }}
     >
       {children}
     </MessagesContext.Provider>

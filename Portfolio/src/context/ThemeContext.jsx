@@ -8,7 +8,7 @@ function isDaytime() {
 }
 
 export function ThemeProvider({ children }) {
-  const [light, setLight] = useState(isDaytime)
+  const [light, setLight] = useState(!isDaytime)
 
   useEffect(() => {
     const msUntilNextHour = () => {

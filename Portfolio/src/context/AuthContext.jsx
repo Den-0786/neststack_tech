@@ -3,8 +3,7 @@ import { createContext, useContext, useState, useEffect } from 'react'
 const AuthContext = createContext(null)
 
 const AUTH_KEY = 'neststack_auth'
-const HARDCODED_USER = 'Kekeli@26'
-const HARDCODED_PASS = 'NestStack26'
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
 export function AuthProvider({ children }) {
   const [auth, setAuth] = useState(() => {
@@ -19,12 +18,23 @@ export function AuthProvider({ children }) {
     localStorage.setItem(AUTH_KEY, JSON.stringify(auth))
   }, [auth])
 
-  function login(username, password) {
-    if (username === HARDCODED_USER && password === HARDCODED_PASS) {
-      setAuth({ isAuthenticated: true, username })
-      return true
+  async function login(username, password) {
+    try {
+      const response = await fetch(`${API_BASE}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      })
+      const data = await response.json()
+      if (response.ok) {
+        setAuth({ isAuthenticated: true, username: data.username, token: data.token })
+        return true
+      }
+      return false
+    } catch (error) {
+      console.error('Login error:', error)
+      return false
     }
-    return false
   }
 
   function logout() {
