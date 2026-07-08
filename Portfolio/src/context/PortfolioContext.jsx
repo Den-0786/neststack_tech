@@ -1,29 +1,29 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 
-const fallbackData = {
+const defaultData = {
   bio: {
-    name: 'Dennis Opoku Amponsah',
-    tagline: 'Engineering The Next Ecosystem.',
-    taglineAccent: 'The Next',
-    intro: 'A precision-engineered portfolio for high-performance web development, cybersecurity, and graphic design.',
-    about: 'I combine innovation, security, and creativity to deliver exceptional digital experiences.',
-    roles: ['Frontend Developer', 'Cybersecurity Enthusiast', 'Graphic Designer'],
-    avatar: '/portimages/abouttemp.jpeg',
-    location: 'Kumasi, Ghana',
-    version: 'v4.2.0-STABLE',
-    cvUrl: '#',
-    githubUrl: 'https://github.com/',
+    name: '',
+    tagline: '',
+    taglineAccent: '',
+    intro: '',
+    about: '',
+    roles: [],
+    avatar: '',
+    location: '',
+    version: '',
+    cvUrl: '',
+    githubUrl: '',
   },
   contact: {
-    email: 'dennisopokamponsah86@gmail.com',
-    phone1: '+233 245 660 786',
-    phone2: '+233 201 041 717',
-    whatsapp: 'https://wa.me/233245660786',
-    twitter: 'https://x.com/DennisOpok35210',
-    linkedin: 'https://www.linkedin.com/in/dennis-opoku-amponsah-3911aa31b',
-    facebook: 'https://www.facebook.com/profile.php?id=100085692115198',
-    instagram: 'https://www.instagram.com/opoku2102/',
-    availability: 'Currently accepting complex technical challenges.',
+    email: '',
+    phone1: '',
+    phone2: '',
+    whatsapp: '',
+    twitter: '',
+    linkedin: '',
+    facebook: '',
+    instagram: '',
+    availability: '',
   },
   projects: [],
   certificates: [],
@@ -35,7 +35,7 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 const PortfolioContext = createContext(null)
 
 export function PortfolioProvider({ children }) {
-  const [data, setData] = useState(fallbackData)
+  const [data, setData] = useState(defaultData)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -48,16 +48,15 @@ export function PortfolioProvider({ children }) {
       const apiData = await response.json()
       if (response.ok) {
         setData({
-          bio: apiData.bio || fallbackData.bio,
-          contact: apiData.contact || fallbackData.contact,
+          bio: apiData.bio || defaultData.bio,
+          contact: apiData.contact || defaultData.contact,
           projects: apiData.projects || [],
           certificates: apiData.certificates || [],
           skills: apiData.skills || [],
         })
       }
     } catch (error) {
-      console.error('Failed to fetch portfolio, using fallback data:', error)
-      setData(fallbackData)
+      console.error('Failed to fetch portfolio:', error)
     } finally {
       setLoading(false)
     }
