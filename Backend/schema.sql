@@ -1,5 +1,5 @@
 -- Users table for authentication
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   username VARCHAR(255) UNIQUE NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Portfolio bio table
-CREATE TABLE IF NOT EXISTS bio (
+CREATE TABLE bio (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   location VARCHAR(255),
@@ -15,20 +15,20 @@ CREATE TABLE IF NOT EXISTS bio (
   avatar TEXT,
   cv_url TEXT,
   github_url TEXT,
-  roles TEXT[],
+  roles VARCHAR(MAX),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Skills table
-CREATE TABLE IF NOT EXISTS skills (
+CREATE TABLE skills (
   id SERIAL PRIMARY KEY,
   category VARCHAR(255) NOT NULL,
-  items TEXT[] NOT NULL,
+  items VARCHAR(MAX) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Contact table
-CREATE TABLE IF NOT EXISTS contact (
+CREATE TABLE contact (
   id SERIAL PRIMARY KEY,
   phone1 VARCHAR(50),
   email VARCHAR(255),
@@ -40,19 +40,19 @@ CREATE TABLE IF NOT EXISTS contact (
 );
 
 -- Projects table
-CREATE TABLE IF NOT EXISTS projects (
+CREATE TABLE projects (
   id SERIAL PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
   description TEXT,
   image TEXT,
-  tags TEXT[],
+  tags VARCHAR(MAX),
   github_url TEXT,
   live_url TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Certificates table
-CREATE TABLE IF NOT EXISTS certificates (
+CREATE TABLE certificates (
   id SERIAL PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
   issuer VARCHAR(255),
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS certificates (
 );
 
 -- Messages table
-CREATE TABLE IF NOT EXISTS messages (
+CREATE TABLE messages (
   id SERIAL PRIMARY KEY,
   from_name VARCHAR(255),
   email VARCHAR(255),
@@ -70,12 +70,10 @@ CREATE TABLE IF NOT EXISTS messages (
   message TEXT,
   type VARCHAR(50) DEFAULT 'general',
   status VARCHAR(50) DEFAULT 'unread',
-  attachments TEXT[],
+  attachments VARCHAR(MAX),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert default admin user (password: NestStack26)
--- This is a placeholder - you should change this in production
-INSERT INTO users (username, password_hash)
-VALUES ('Kekeli@26', '$2b$10$placeholder_hash_replace_with_bcrypt')
-ON CONFLICT (username) DO NOTHING;
+-- Note: Initial admin user will be created via API endpoint
+-- Use POST /api/auth/register to create the first user (if you add registration)
+-- Or insert manually with bcrypt hashed password
