@@ -155,7 +155,7 @@ export default function ContactSection() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className={`font-mono text-xs uppercase tracking-widest block mb-1 ${light ? 'text-gray-400' : 'text-site-muted'}`}>
                       Name <span className="text-red-400">*</span>
