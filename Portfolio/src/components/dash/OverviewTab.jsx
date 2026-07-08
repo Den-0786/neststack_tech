@@ -1,30 +1,43 @@
 import { TrendingUp, Calendar, Globe, Plus } from 'lucide-react'
 import { usePortfolio } from '../../context/PortfolioContext'
 import { useDashTheme } from '../../context/DashThemeContext'
+import { useState } from 'react'
 
-const stats = [
-  { label: 'Daily Visits', value: '12,842', change: '+14.2% vs yesterday', icon: TrendingUp },
-  { label: 'Monthly Reach', value: '384.2K', change: '+5.8% vs last month', icon: Calendar },
-  { label: 'Annual Traffic', value: '4.21M', change: '+21.4% vs prev year', icon: Globe },
-]
-
-const chartBars = [18, 35, 28, 55, 42, 70, 58, 80, 65, 88, 72, 95]
-
-const modules = [
-  { name: 'Edge Runtime', icon: '❖' },
-  { name: 'Vector DB', icon: '⬡' },
-  { name: 'Auth_Secure', icon: '⬢' },
+const streamData = [
+  { time: '00:00', value: 18, label: 'Node Alpha - 18 requests' },
+  { time: '02:00', value: 35, label: 'Node Alpha - 35 requests' },
+  { time: '04:00', value: 28, label: 'Node Alpha - 28 requests' },
+  { time: '06:00', value: 55, label: 'Node Beta - 55 requests' },
+  { time: '08:00', value: 42, label: 'Node Beta - 42 requests' },
+  { time: '10:00', value: 70, label: 'Node Beta - 70 requests' },
+  { time: '12:00', value: 58, label: 'Node Gamma - 58 requests' },
+  { time: '14:00', value: 80, label: 'Node Gamma - 80 requests' },
+  { time: '16:00', value: 65, label: 'Node Gamma - 65 requests' },
+  { time: '18:00', value: 88, label: 'Node Delta - 88 requests' },
+  { time: '20:00', value: 72, label: 'Node Delta - 72 requests' },
+  { time: '22:00', value: 95, label: 'Node Delta - 95 requests' },
 ]
 
 export default function OverviewTab() {
   const { data } = usePortfolio()
   const light = useDashTheme()
+  const [hoveredStream, setHoveredStream] = useState(null)
   const card = light ? 'bg-white border-gray-200' : 'bg-site-card border-site-border'
   const label = light ? 'text-gray-500' : 'text-site-muted'
   const heading = light ? 'text-gray-900' : 'text-white'
   const sub = light ? 'text-gray-500' : 'text-gray-400'
   const accent = light ? 'text-green-700' : 'text-neon'
   const moduleRow = light ? 'border-gray-200' : 'border-site-border'
+
+  const stats = [
+    { label: 'Daily Visits', value: data.bio.name ? '0' : 'N/A', change: 'Awaiting data', icon: TrendingUp },
+    { label: 'Monthly Reach', value: data.bio.name ? '0' : 'N/A', change: 'Awaiting data', icon: Calendar },
+    { label: 'Annual Traffic', value: data.bio.name ? '0' : 'N/A', change: 'Awaiting data', icon: Globe },
+  ]
+
+  const modules = data.skills.length > 0
+    ? data.skills.slice(0, 3).map((skill, i) => ({ name: skill.category, icon: ['❖', '⬡', '⬢'][i % 3] }))
+    : [{ name: 'No modules', icon: '○' }]
 
   return (
     <div className="px-5 py-5 space-y-4">
@@ -65,22 +78,30 @@ export default function OverviewTab() {
           </div>
         </div>
 
-        <div className="h-24 flex items-end gap-0.5 mt-4">
-          {chartBars.map((h, i) => (
+        <div className="h-24 flex items-end gap-0.5 mt-4 relative">
+          {streamData.map((stream, i) => (
             <div
               key={i}
-              className="flex-1 rounded-sm"
+              className="flex-1 rounded-sm relative group cursor-pointer transition-all hover:opacity-80"
               style={{
-                height: `${h}%`,
-                background: i >= chartBars.length - 4
+                height: `${stream.value}%`,
+                background: stream.value >= 70
                   ? 'rgba(57,255,20,0.7)'
                   : light ? 'rgba(0,100,0,0.15)' : 'rgba(57,255,20,0.15)',
               }}
-            />
+              onMouseEnter={() => setHoveredStream(i)}
+              onMouseLeave={() => setHoveredStream(null)}
+            >
+              {hoveredStream === i && (
+                <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 rounded text-xs font-mono whitespace-nowrap z-10 ${light ? 'bg-black text-white' : 'bg-white text-black'}`}>
+                  {stream.label}
+                </div>
+              )}
+            </div>
           ))}
         </div>
         <div className="flex justify-between mt-2">
-          {['00:00:00', 'Node_Alpha_X-R', '23:59:59'].map((t) => (
+          {['00:00', '06:00', '12:00', '18:00', '23:59'].map((t) => (
             <span key={t} className={`font-mono text-xs ${label}`}>{t}</span>
           ))}
         </div>
