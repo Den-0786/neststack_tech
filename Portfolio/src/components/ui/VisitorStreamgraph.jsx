@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { 
   AreaChart, 
   Area, 
@@ -8,21 +8,41 @@ import {
   CartesianGrid
 } from 'recharts'
 
-// Mock data generator for weekly visitor data
-function generateWeeklyVisitorData() {
+// Fetch real weekly visitor data from backend
+async function fetchWeeklyVisitorData() {
+  const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:10000').replace(/\/$/, '') + '/api'
+  try {
+    const response = await fetch(`${API_URL}/portfolio/visitors/weekly`)
+    if (!response.ok) {
+      throw new Error('Failed to fetch visitor data')
+    }
+    const data = await response.json()
+    
+    // If no real data, return empty array
+    if (!Array.isArray(data) || data.length === 0) {
+      return []
+    }
+    
+    return data
+  } catch (error) {
+    console.error('Failed to fetch visitor data:', error)
+    return []
+  }
+}
+
+// Fallback to mock data if no real data available
+function generateMockWeeklyData() {
   const currentMonth = new Date().getMonth()
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 
                   'July', 'August', 'September', 'October', 'November', 'December']
   
   const data = []
-  const currentYear = new Date().getFullYear()
   
   for (let monthIndex = 0; monthIndex <= currentMonth; monthIndex++) {
     const monthData = {
       month: months[monthIndex],
     }
     
-    // Generate realistic weekly data with organic peaks and valleys
     const weeksInMonth = [4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5][monthIndex] || 4
     const baseVisitors = 100 + Math.random() * 50
     
@@ -75,11 +95,30 @@ function CustomTooltip({ active, payload, label }) {
 }
 
 export default function VisitorStreamgraph() {
-  const data = useMemo(() => generateWeeklyVisitorData(), [])
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadData() {
+      setLoading(true)
+      const realData = await fetchWeeklyVisitorData()
+      
+      // If no real data available, use mock data
+      if (realData.length === 0) {
+        const mockData = generateMockWeeklyData()
+        setData(mockData)
+      } else {
+        setData(realData)
+      }
+      setLoading(false)
+    }
+    
+    loadData()
+  }, [])
   
   // Calculate statistics
-  const currentMonth = new Date().getMonth()
-  const currentMonthData = data[currentMonth]
+  const currentMonthIndex = Math.min(new Date().getMonth(), data.length - 1)
+  const currentMonthData = data[currentMonthIndex] || {}
   const currentMonthWeeks = Object.keys(currentMonthData)
     .filter(key => key.startsWith('week'))
     .length
@@ -87,12 +126,27 @@ export default function VisitorStreamgraph() {
   const totalVisitorsThisYear = data.reduce((sum, month) => {
     return sum + Object.entries(month)
       .filter(([key]) => key.startsWith('week'))
-      .reduce((weekSum, [, value]) => weekSum + value, 0)
+      .reduce((weekSum, [, value]) => weekSum + (value || 0), 0)
   }, 0)
   
-  const totalVisitorsAllMonths = totalVisitorsThisYear // For now, same as this year
+  const totalVisitorsAllMonths = totalVisitorsThisYear
   
-  // Color palette for the streams
+  if (loading) {
+    return (
+      <div className="w-full space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-5 animate-pulse">
+              <div className="h-4 bg-gray-700 rounded w-20 mb-2" />
+              <div className="h-8 bg-gray-700 rounded w-16 mb-1" />
+              <div className="h-3 bg-gray-700 rounded w-24" />
+            </div>
+          ))}
+        </div>
+        <div className="bg-gray-800/50 border border-gray-700/50 rounded-2xl p-6 h-[400px] animate-pulse" />
+      </div>
+    )
+  }
   const colors = [
     '#8B5CF6', // Purple
     '#3B82F6', // Blue

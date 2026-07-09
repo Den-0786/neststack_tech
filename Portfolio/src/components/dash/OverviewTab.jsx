@@ -1,63 +1,12 @@
 import { Plus } from 'lucide-react'
 import { usePortfolio } from '../../context/PortfolioContext'
 import { useDashTheme } from '../../context/DashThemeContext'
-import { useState } from 'react'
 import VisitorStreamgraph from '../ui/VisitorStreamgraph'
-
-const streamLayers = [
-  {
-    name: 'Organic Traffic',
-    color: 'rgba(139, 92, 246, 0.5)',
-    stroke: 'rgba(139, 92, 246, 0.8)',
-    data: [25, 40, 35, 55, 45, 65, 55, 75, 65, 85, 75, 95],
-  },
-  {
-    name: 'Direct Traffic',
-    color: 'rgba(59, 130, 246, 0.5)',
-    stroke: 'rgba(59, 130, 246, 0.8)',
-    data: [35, 50, 45, 65, 55, 75, 65, 85, 75, 95, 85, 100],
-  },
-  {
-    name: 'Referral Traffic',
-    color: 'rgba(34, 197, 94, 0.5)',
-    stroke: 'rgba(34, 197, 94, 0.8)',
-    data: [20, 35, 30, 50, 40, 60, 50, 70, 60, 80, 70, 85],
-  },
-]
-
-function generateWavePath(data, width, height, yOffset = 0) {
-  const padding = 20
-  const xStep = (width - padding * 2) / (data.length - 1)
-  const baseline = height - 20
-  const maxVal = Math.max(...data)
-  const scale = (height * 0.6) / maxVal
-
-  let path = `M ${padding} ${baseline}`
-  
-  for (let i = 0; i < data.length; i++) {
-    const x = padding + i * xStep
-    const y = baseline - yOffset - data[i] * scale
-    const nextX = padding + (i + 1) * xStep
-    const nextY = baseline - yOffset - (data[i + 1] || data[i]) * scale
-    
-    if (i < data.length - 1) {
-      const cp1x = x + xStep / 2
-      const cp1y = y
-      const cp2x = nextX - xStep / 2
-      const cp2y = nextY
-      path += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${nextX} ${nextY}`
-    }
-  }
-
-  path += ` L ${width - padding} ${baseline} Z`
-  return path
-}
+import TrafficStreamgraph from '../ui/TrafficStreamgraph'
 
 export default function OverviewTab() {
   const { data } = usePortfolio()
   const light = useDashTheme()
-  const [hoveredStream, setHoveredStream] = useState(null)
-  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0, flip: false })
 
   const card = light ? 'bg-white border-gray-200' : 'bg-site-card border-site-border'
   const label = light ? 'text-gray-500' : 'text-site-muted'
@@ -100,88 +49,7 @@ export default function OverviewTab() {
           </div>
         </div>
 
-        <div className="h-24 mt-4 relative">
-          <svg 
-            width="100%" 
-            height="100%" 
-            viewBox="0 0 600 100" 
-            preserveAspectRatio="none"
-            onMouseMove={(e) => {
-              const rect = e.currentTarget.getBoundingClientRect()
-              const x = (e.clientX - rect.left) / rect.width * 600
-              const padding = 20
-              const xStep = (600 - padding * 2) / (streamLayers[0].data.length - 1)
-              const relativeX = x - padding
-              const dataIndex = Math.round(relativeX / xStep)
-              const clampedIndex = Math.max(0, Math.min(streamLayers[0].data.length - 1, dataIndex))
-              setHoveredStream(clampedIndex)
-              const screenMidpoint = window.innerWidth / 2
-              const flip = e.clientX > screenMidpoint
-              setTooltipPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top, flip })
-            }}
-            onMouseLeave={() => setHoveredStream(null)}
-          >
-            {streamLayers.map((layer, layerIndex) => (
-              <path
-                key={layer.name}
-                d={generateWavePath(layer.data, 600, 100, layerIndex * 8)}
-                fill={layer.color}
-                stroke={layer.stroke}
-                strokeWidth="1"
-              />
-            ))}
-            {hoveredStream !== null && (
-              <g>
-                <line
-                  x1={20 + hoveredStream * ((600 - 40) / (streamLayers[0].data.length - 1))}
-                  y1={0}
-                  x2={20 + hoveredStream * ((600 - 40) / (streamLayers[0].data.length - 1))}
-                  y2={100}
-                  stroke={light ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)'}
-                  strokeWidth="1"
-                  strokeDasharray="4 4"
-                />
-                {streamLayers.map((layer, layerIndex) => {
-                  const x = 20 + hoveredStream * ((600 - 40) / (layer.data.length - 1))
-                  const baseline = 80
-                  const maxVal = Math.max(...layer.data)
-                  const scale = 60 / maxVal
-                  const y = baseline - layerIndex * 8 - layer.data[hoveredStream] * scale
-                  return (
-                    <circle
-                      key={layerIndex}
-                      cx={x}
-                      cy={y}
-                      r={5}
-                      fill={layer.stroke}
-                      stroke={light ? 'white' : 'black'}
-                      strokeWidth="2"
-                    />
-                  )
-                })}
-              </g>
-            )}
-          </svg>
-          {hoveredStream !== null && (
-            <div 
-              className={`absolute px-3 py-2 rounded text-xs font-mono z-10 pointer-events-none ${light ? 'bg-black text-white' : 'bg-white text-black'}`}
-              style={{ 
-                left: tooltipPosition.flip ? tooltipPosition.x - 10 : tooltipPosition.x + 10,
-                top: tooltipPosition.y - 10,
-                transform: tooltipPosition.flip ? 'translate(-100%, -100%)' : 'translate(0, -100%)'
-              }}
-            >
-              {streamLayers.map(layer => (
-                <div key={layer.name}>{layer.name}: {layer.data[hoveredStream]} req</div>
-              ))}
-            </div>
-          )}
-        </div>
-        <div className="flex justify-between mt-2">
-          {['00:00', '06:00', '12:00', '18:00', '23:59'].map((t) => (
-            <span key={t} className={`font-mono text-xs ${label}`}>{t}</span>
-          ))}
-        </div>
+        <TrafficStreamgraph />
       </div>
 
       <div className={`border p-5 ${card}`}>
