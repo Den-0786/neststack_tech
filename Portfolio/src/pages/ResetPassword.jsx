@@ -1,22 +1,23 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Mail, ShieldCheck } from 'lucide-react'
+import { useToast } from '../context/ToastContext'
 import Reveal from '../components/ui/Reveal'
 import { useTheme } from '../context/ThemeContext'
 
 export default function ResetPassword() {
   const [email, setEmail] = useState('')
   const [sent, setSent] = useState(false)
-  const [error, setError] = useState('')
   const { light } = useTheme()
+  const toast = useToast()
 
   function handleSubmit(e) {
     e.preventDefault()
     if (!email) {
-      setError('Please enter your email address.')
+      toast.error('Validation Error', 'Please enter your email address.')
       return
     }
-    setError('')
+    toast.success('Reset Link Sent', 'Check your email for password reset instructions.')
     setSent(true)
   }
 
@@ -37,12 +38,6 @@ export default function ResetPassword() {
         <p className={`font-mono text-xs mb-6 ${light ? 'text-gray-500' : 'text-site-muted'}`}>
           [RECOVERY_PROTOCOL] — Enter your registered email to receive reset instructions.
         </p>
-
-        {error && (
-          <p className="font-mono text-xs text-red-400 mb-4 border border-red-500/30 bg-red-500/10 px-3 py-2">
-            {error}
-          </p>
-        )}
 
         {sent ? (
           <div className={`border px-4 py-5 text-center ${light ? 'border-neon-light/30 bg-neon-light/5' : 'border-neon/30 bg-neon/5'}`}>

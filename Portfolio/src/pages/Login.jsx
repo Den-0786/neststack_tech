@@ -2,26 +2,24 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Lock, Terminal, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 import Reveal from '../components/ui/Reveal'
 import { useTheme } from '../context/ThemeContext'
 
 export default function Login() {
   const [form, setForm] = useState({ username: '', password: '' })
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
   const { login } = useAuth()
   const { light } = useTheme()
+  const toast = useToast()
 
   async function handleSubmit(e) {
     e.preventDefault()
-    setError('')
-    setSuccess('')
     
     if (!form.username || !form.password) {
-      setError('All fields are required.')
+      toast.error('Validation Error', 'All fields are required.')
       return
     }
     
@@ -30,10 +28,10 @@ export default function Login() {
     setLoading(false)
     
     if (success) {
-      setSuccess('Login successful! Redirecting...')
+      toast.success('Login Successful', 'Redirecting to dashboard...')
       setTimeout(() => navigate('/dashboard'), 1000)
     } else {
-      setError('Invalid credentials.')
+      toast.error('Login Failed', 'Invalid credentials. Please try again.')
     }
   }
 
@@ -54,18 +52,6 @@ export default function Login() {
         <p className={`font-mono text-xs mb-6 ${light ? 'text-gray-500' : 'text-site-muted'}`}>
           [SECURE_CHANNEL] — Authenticate to continue.
         </p>
-
-        {error && (
-          <p className="font-mono text-xs text-red-400 mb-4 border border-red-500/30 bg-red-500/10 px-3 py-2">
-            {error}
-          </p>
-        )}
-
-        {success && (
-          <p className="font-mono text-xs text-neon mb-4 border border-neon/30 bg-neon/10 px-3 py-2">
-            {success}
-          </p>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

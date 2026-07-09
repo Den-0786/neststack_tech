@@ -19,7 +19,7 @@ export default function Projects() {
 
   return (
     <div className="min-h-screen bg-sys-bg flex flex-col">
-      <Navbar />
+      <SiteNav />
 
       <main className="flex-1 pt-14">
         <section className="max-w-7xl mx-auto px-6 py-16">
@@ -152,7 +152,7 @@ export default function Projects() {
         </Reveal>
       </main>
 
-      <Footer />
+      <SiteFooter />
     </div>
   )
 }

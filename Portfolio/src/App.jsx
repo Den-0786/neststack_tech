@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
+import { ToastProvider } from './context/ToastContext'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import ResetPassword from './pages/ResetPassword'
@@ -16,6 +17,7 @@ function App() {
   return (
     <ThemeProvider>
     <AuthProvider>
+    <ToastProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/projects" element={<Projects />} />
@@ -26,6 +28,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
+    </ToastProvider>
     </AuthProvider>
     </ThemeProvider>
   )
