@@ -16,8 +16,8 @@ function ProtectedDashboard() {
 function App() {
   return (
     <ThemeProvider>
-    <AuthProvider>
     <ToastProvider>
+    <AuthProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/projects" element={<Projects />} />
@@ -28,8 +28,8 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
-    </ToastProvider>
     </AuthProvider>
+    </ToastProvider>
     </ThemeProvider>
   )
 }
