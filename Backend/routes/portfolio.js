@@ -245,7 +245,6 @@ router.get('/visitors/stats', async (req, res) => {
 // Get weekly visitor data by month for streamgraph
 router.get('/visitors/weekly', async (req, res) => {
   try {
-    const currentYear = new Date().getFullYear()
     const currentMonth = new Date().getMonth() + 1
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 
                     'July', 'August', 'September', 'October', 'November', 'December']
@@ -257,13 +256,13 @@ router.get('/visitors/weekly', async (req, res) => {
         month: months[monthIndex],
       }
       
-      // Get visitor count for each week of this month
-      const startDate = new Date(currentYear, monthIndex, 1)
-      const endDate = new Date(currentYear, monthIndex + 1, 0)
+      // Get visitor count for each week of this month using relative time periods
+      const startDate = new Date(new Date().getFullYear(), monthIndex, 1)
+      const endDate = new Date(new Date().getFullYear(), monthIndex + 1, 0)
       
       // Week 1: days 1-7
-      const week1Start = new Date(currentYear, monthIndex, 1).toISOString().split('T')[0]
-      const week1End = new Date(currentYear, monthIndex, 7).toISOString().split('T')[0]
+      const week1Start = new Date(new Date().getFullYear(), monthIndex, 1).toISOString().split('T')[0]
+      const week1End = new Date(new Date().getFullYear(), monthIndex, 7).toISOString().split('T')[0]
       const week1Result = await pool.query(
         `SELECT COUNT(DISTINCT visitor_id) as count FROM visitors WHERE visit_date >= $1 AND visit_date <= $2`,
         [week1Start, week1End]
@@ -271,8 +270,8 @@ router.get('/visitors/weekly', async (req, res) => {
       monthData.week1 = week1Result.rows[0]?.count || 0
       
       // Week 2: days 8-14
-      const week2Start = new Date(currentYear, monthIndex, 8).toISOString().split('T')[0]
-      const week2End = new Date(currentYear, monthIndex, 14).toISOString().split('T')[0]
+      const week2Start = new Date(new Date().getFullYear(), monthIndex, 8).toISOString().split('T')[0]
+      const week2End = new Date(new Date().getFullYear(), monthIndex, 14).toISOString().split('T')[0]
       const week2Result = await pool.query(
         `SELECT COUNT(DISTINCT visitor_id) as count FROM visitors WHERE visit_date >= $1 AND visit_date <= $2`,
         [week2Start, week2End]
@@ -280,8 +279,8 @@ router.get('/visitors/weekly', async (req, res) => {
       monthData.week2 = week2Result.rows[0]?.count || 0
       
       // Week 3: days 15-21
-      const week3Start = new Date(currentYear, monthIndex, 15).toISOString().split('T')[0]
-      const week3End = new Date(currentYear, monthIndex, 21).toISOString().split('T')[0]
+      const week3Start = new Date(new Date().getFullYear(), monthIndex, 15).toISOString().split('T')[0]
+      const week3End = new Date(new Date().getFullYear(), monthIndex, 21).toISOString().split('T')[0]
       const week3Result = await pool.query(
         `SELECT COUNT(DISTINCT visitor_id) as count FROM visitors WHERE visit_date >= $1 AND visit_date <= $2`,
         [week3Start, week3End]
@@ -289,8 +288,8 @@ router.get('/visitors/weekly', async (req, res) => {
       monthData.week3 = week3Result.rows[0]?.count || 0
       
       // Week 4: days 22-28
-      const week4Start = new Date(currentYear, monthIndex, 22).toISOString().split('T')[0]
-      const week4End = new Date(currentYear, monthIndex, 28).toISOString().split('T')[0]
+      const week4Start = new Date(new Date().getFullYear(), monthIndex, 22).toISOString().split('T')[0]
+      const week4End = new Date(new Date().getFullYear(), monthIndex, 28).toISOString().split('T')[0]
       const week4Result = await pool.query(
         `SELECT COUNT(DISTINCT visitor_id) as count FROM visitors WHERE visit_date >= $1 AND visit_date <= $2`,
         [week4Start, week4End]
@@ -298,10 +297,10 @@ router.get('/visitors/weekly', async (req, res) => {
       monthData.week4 = week4Result.rows[0]?.count || 0
       
       // Week 5: days 29-31 (if applicable)
-      const daysInMonth = new Date(currentYear, monthIndex + 1, 0).getDate()
+      const daysInMonth = new Date(new Date().getFullYear(), monthIndex + 1, 0).getDate()
       if (daysInMonth > 28) {
-        const week5Start = new Date(currentYear, monthIndex, 29).toISOString().split('T')[0]
-        const week5End = new Date(currentYear, monthIndex, daysInMonth).toISOString().split('T')[0]
+        const week5Start = new Date(new Date().getFullYear(), monthIndex, 29).toISOString().split('T')[0]
+        const week5End = new Date(new Date().getFullYear(), monthIndex, daysInMonth).toISOString().split('T')[0]
         const week5Result = await pool.query(
           `SELECT COUNT(DISTINCT visitor_id) as count FROM visitors WHERE visit_date >= $1 AND visit_date <= $2`,
           [week5Start, week5End]
@@ -322,16 +321,13 @@ router.get('/visitors/weekly', async (req, res) => {
 // Get total visitor counts for year and all time
 router.get('/visitors/totals', async (req, res) => {
   try {
-    const currentYear = new Date().getFullYear()
-    
-    // Total visitors this year
+    // Year to Date (last 365 days)
     const yearResult = await pool.query(
-      `SELECT COUNT(DISTINCT visitor_id) as count FROM visitors WHERE EXTRACT(YEAR FROM visit_date) = $1`,
-      [currentYear]
+      `SELECT COUNT(DISTINCT visitor_id) as count FROM visitors WHERE visit_date >= NOW() - INTERVAL '365 days'`
     )
     const yearTotal = yearResult.rows[0]?.count || 0
     
-    // Total visitors all time
+    // All Time (no date filter)
     const allTimeResult = await pool.query(
       `SELECT COUNT(DISTINCT visitor_id) as count FROM visitors`
     )

@@ -71,7 +71,7 @@ function CustomTooltip({ active, payload, label }) {
           </div>
         ))}
         <div className="border-t border-white/20 pt-1.5 mt-1.5">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4">
             <span className="text-white text-[10px] font-bold">Total Monthly</span>
             <span className="text-white text-xs font-bold">{total}</span>
           </div>
@@ -110,10 +110,13 @@ export default function VisitorStreamgraph() {
     .filter(([key]) => key.startsWith('week'))
     .reduce((sum, [, value]) => sum + (value || 0), 0)
   
-  // Calculate total weeks from January to current month
-  const totalWeeks = data.reduce((sum, month) => {
-    return sum + Object.keys(month).filter(key => key.startsWith('week')).length
-  }, 0)
+  // Calculate total weeks from January 1 to current date
+  const currentYear = new Date().getFullYear()
+  const startDate = new Date(currentYear, 0, 1) // January 1
+  const currentDate = new Date()
+  const diffTime = currentDate - startDate
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  const totalWeeks = Math.ceil(diffDays / 7)
   
   // Use actual totals from backend
   const totalVisitorsThisYear = visitorTotals.yearTotal
