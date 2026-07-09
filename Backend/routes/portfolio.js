@@ -97,10 +97,10 @@ router.delete('/skills/:id', async (req, res) => {
 // Projects CRUD
 router.post('/projects', async (req, res) => {
   try {
-    const { title, description, image, tags, github_url, live_url, status } = req.body
+    const { title, description, tags, github_url, live_url, status } = req.body
     const result = await pool.query(
-      'INSERT INTO projects (title, description, image, tags, github_url, live_url, status) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
-      [title, description, image, tags, github_url, live_url, status || 'ACTIVE']
+      'INSERT INTO projects (title, description, tags, github_url, live_url, status) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [title, description, tags, github_url, live_url, status || 'ACTIVE']
     )
     res.json(result.rows[0])
   } catch (error) {
@@ -111,15 +111,15 @@ router.post('/projects', async (req, res) => {
 
 router.put('/projects/:id', async (req, res) => {
   try {
-    const { title, description, image, tags, github_url, live_url, status } = req.body
-    console.log('PUT /projects/:id received:', { id: req.params.id, title, description, image, tags, github_url, live_url, status })
+    const { title, description, tags, github_url, live_url, status } = req.body
+    console.log('PUT /projects/:id received:', { id: req.params.id, title, description, tags, github_url, live_url, status })
     
     // Handle tags as array or string - convert to PostgreSQL array format
     const tagsValue = Array.isArray(tags) ? `{${tags.map(t => `"${t}"`).join(',')}}` : tags
     
     const result = await pool.query(
-      'UPDATE projects SET title = $1, description = $2, image = $3, tags = $4, github_url = $5, live_url = $6, status = $7 WHERE id = $8 RETURNING *',
-      [title, description, image, tagsValue, github_url, live_url, status || 'ACTIVE', req.params.id]
+      'UPDATE projects SET title = $1, description = $2, tags = $3, github_url = $4, live_url = $5, status = $6 WHERE id = $7 RETURNING *',
+      [title, description, tagsValue, github_url, live_url, status || 'ACTIVE', req.params.id]
     )
     console.log('Update result:', result.rows[0])
     res.json(result.rows[0])

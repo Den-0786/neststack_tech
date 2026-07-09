@@ -110,10 +110,9 @@ export function PortfolioProvider({ children }) {
         body: JSON.stringify({
           title: project.title,
           description: project.desc || '',
-          image: project.img || '',
           tags: project.tags || [],
-          github_url: project.github || '',
-          live_url: project.liveUrl || '#',
+          github_url: project.github_url || '',
+          live_url: project.live_url || '',
           status: project.status || 'ACTIVE',
         }),
       })
@@ -130,10 +129,9 @@ export function PortfolioProvider({ children }) {
       const payload = {
         title: fields.title,
         description: fields.desc,
-        image: fields.img,
         tags: fields.tags,
-        github_url: fields.github,
-        live_url: fields.liveUrl || '#',
+        github_url: fields.github_url,
+        live_url: fields.live_url,
         status: fields.status || 'ACTIVE',
       }
       console.log('Updating project:', id, payload)

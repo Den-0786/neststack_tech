@@ -1,65 +1,9 @@
 
-import { ArrowRight, ExternalLink } from 'lucide-react'
+import { ArrowRight, ExternalLink, Github } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import Reveal from '../components/ui/Reveal'
-
-const projects = [
-  {
-    id: '#A-101',
-    title: 'Local Service Finder',
-    desc: 'Full-stack booking platform connecting users to local service providers with reviews and payments.',
-    img: '/portimages/agency.png',
-    tags: ['React', 'Node.js', 'PostgreSQL'],
-    github: '#',
-    status: 'LIVE',
-  },
-  {
-    id: '#A-102',
-    title: 'E-Commerce Boutique',
-    desc: 'Online fashion store with product listings, cart, checkout, and an admin dashboard.',
-    img: '/portimages/bite.png',
-    tags: ['HTML', 'CSS', 'JavaScript'],
-    github: '#',
-    status: 'LIVE',
-  },
-  {
-    id: '#A-103',
-    title: 'Hotel Reservation App',
-    desc: 'Room and table booking system with real-time availability tracking.',
-    img: '/portimages/hotel.png',
-    tags: ['React', 'Express', 'MySQL'],
-    github: '#',
-    status: 'ACTIVE',
-  },
-  {
-    id: '#A-104',
-    title: 'Aquawatch an IoT',
-    desc: 'A fun dog-matching web application inspired by Tinder, built with Bootstrap.',
-    img: '/portimages/Aquawatch.png',
-    tags: ['Bootstrap', 'JavaScript'],
-    github: '#',
-    status: 'ARCHIVED',
-  },
-  {
-    id: '#A-105',
-    title: 'Church Website',
-    desc: 'Community connection site helping churches reach members and manage events.',
-    img: '/portimages/bg.jpg',
-    tags: ['HTML', 'CSS', 'Tailwind'],
-    github: '#',
-    status: 'LIVE',
-  },
-  {
-    id: '#A-106',
-    title: 'Expense Tracker App',
-    desc: 'Mobile expense tracking application built with React Native.',
-    img: '/portimages/bgd.jpg',
-    tags: ['React Native', 'Expo'],
-    github: '#',
-    status: 'ACTIVE',
-  },
-]
+import { usePortfolio } from '../context/PortfolioContext'
 
 function statusStyle(s) {
   if (s === 'LIVE') return 'text-green-600 border-green-200 bg-green-50'
@@ -68,6 +12,9 @@ function statusStyle(s) {
 }
 
 export default function Projects() {
+  const { data } = usePortfolio()
+  const projects = data.projects || []
+
   return (
     <div className="min-h-screen bg-sys-bg flex flex-col">
       <Navbar />
@@ -98,36 +45,47 @@ export default function Projects() {
             {projects.map((p, idx) => (
               <Reveal key={p.id} direction="up" delay={idx * 80}>
                 <div className="bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
-                <div className="relative overflow-hidden">
-                  <img src={p.img} alt={p.title} className="w-full h-44 object-cover" />
-                  <div className="absolute top-3 left-3 flex items-center gap-2">
-                    <span className="font-mono text-xs text-gray-400 bg-white/90 px-2 py-0.5">{p.id}</span>
-                    <span className={`font-mono text-xs border px-2 py-0.5 ${statusStyle(p.status)}`}>
-                      {p.status}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="p-5 flex flex-col flex-1">
-                  <h3 className="font-semibold text-gray-900 text-sm mb-1">{p.title}</h3>
-                  <p className="text-xs text-gray-500 leading-relaxed mb-4 flex-1">{p.desc}</p>
-
-                  <div className="flex flex-wrap gap-1.5 mb-4">
-                    {p.tags.map((t) => (
-                      <span key={t} className="font-mono text-xs text-gray-500 border border-gray-200 px-2 py-0.5">
-                        {t}
+                  <div className="p-5 flex flex-col flex-1">
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="font-semibold text-gray-900 text-sm">{p.title}</h3>
+                      <span className={`font-mono text-[10px] border px-2 py-0.5 shrink-0 ${statusStyle(p.status)}`}>
+                        {p.status}
                       </span>
-                    ))}
-                  </div>
+                    </div>
+                    <p className="text-xs text-gray-500 leading-relaxed mb-4 flex-1">{p.description}</p>
 
-                  <a
-                    href={p.github}
-                    className="flex items-center gap-1 font-mono text-xs uppercase tracking-widest text-gray-900 hover:text-accent transition-colors"
-                  >
-                    <ExternalLink size={11} /> View Repo
-                  </a>
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      {(Array.isArray(p.tags) ? p.tags : []).map((t) => (
+                        <span key={t} className="font-mono text-xs text-gray-500 border border-gray-200 px-2 py-0.5">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="flex gap-2 mt-auto">
+                      {p.live_url && p.live_url !== '#' && (
+                        <a
+                          href={p.live_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 flex items-center justify-center gap-1.5 bg-gray-900 text-white font-mono text-xs uppercase tracking-widest px-4 py-2.5 hover:bg-gray-700 transition-colors"
+                        >
+                          Launch Live App →
+                        </a>
+                      )}
+                      {p.github_url && p.github_url !== '#' && (
+                        <a
+                          href={p.github_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 flex items-center justify-center gap-1.5 border border-gray-900 text-gray-900 font-mono text-xs uppercase tracking-widest px-4 py-2.5 hover:bg-gray-100 transition-colors"
+                        >
+                          <Github size={12} /> View Source Code
+                        </a>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
               </Reveal>
             ))}
           </div>

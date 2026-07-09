@@ -21,7 +21,8 @@ export default function Navbar() {
           {open ? <X size={18} /> : <Menu size={18} />}
         </button>
 
-        <Link to="/" className="font-mono font-bold text-sm tracking-widest text-gray-900">
+        <Link to="/" className="flex items-center gap-3 font-mono font-bold text-sm tracking-widest text-gray-900">
+          <img src="/portimages/img.jpg" alt="NestStack" className="w-8 h-8 rounded-full object-cover border-2 border-gray-300" />
           SYSTEM_CORE
         </Link>
 

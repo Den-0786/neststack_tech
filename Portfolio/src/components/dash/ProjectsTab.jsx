@@ -22,7 +22,7 @@ export default function ProjectsTab() {
   const [query, setQuery] = useState('')
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState(null)
-  const [form, setForm] = useState({ title: '', desc: '', tags: '', github: '', img: '', status: 'ACTIVE' })
+  const [form, setForm] = useState({ title: '', desc: '', tags: '', github_url: '', live_url: '', status: 'ACTIVE' })
   const [message, setMessage] = useState({ type: '', text: '' })
 
   const filtered = data.projects.filter(
@@ -53,7 +53,7 @@ export default function ProjectsTab() {
   }
 
   function resetForm() {
-    setForm({ title: '', desc: '', tags: '', github: '', img: '', status: 'ACTIVE' })
+    setForm({ title: '', desc: '', tags: '', github_url: '', live_url: '', status: 'ACTIVE' })
     setShowForm(false)
     setEditingId(null)
   }
@@ -63,8 +63,8 @@ export default function ProjectsTab() {
       title: project.title,
       desc: project.description,
       tags: Array.isArray(project.tags) ? project.tags.join(', ') : project.tags,
-      github: project.github_url,
-      img: project.image,
+      github_url: project.github_url || '',
+      live_url: project.live_url || '',
       status: project.status || 'ACTIVE'
     })
     setEditingId(project.id)
@@ -133,24 +133,23 @@ export default function ProjectsTab() {
               />
             </div>
             <div>
-              <label className={`font-mono text-xs uppercase tracking-widest block mb-1 ${lbl}`}>GitHub / Live URL</label>
+              <label className={`font-mono text-xs uppercase tracking-widest block mb-1 ${lbl}`}>GitHub URL</label>
               <input
-                value={form.github}
-                onChange={(e) => setForm((f) => ({ ...f, github: e.target.value }))}
+                value={form.github_url}
+                onChange={(e) => setForm((f) => ({ ...f, github_url: e.target.value }))}
                 placeholder="https://github.com/..."
                 className={`w-full px-3 py-2 text-sm font-mono focus:outline-none focus:border-neon/50 transition-colors border ${input}`}
               />
             </div>
-          <div>
-            <label className={`font-mono text-xs uppercase tracking-widest block mb-2 ${lbl}`}>Project Image — Upload from Machine</label>
-            <S3ImageUpload
-              folder="projects"
-              label="Upload Project Screenshot"
-              preview={form.img}
-              light={light}
-              onUploaded={(url) => setForm((f) => ({ ...f, img: url }))}
-            />
-          </div>
+            <div>
+              <label className={`font-mono text-xs uppercase tracking-widest block mb-1 ${lbl}`}>Live App URL</label>
+              <input
+                value={form.live_url}
+                onChange={(e) => setForm((f) => ({ ...f, live_url: e.target.value }))}
+                placeholder="https://your-app.com"
+                className={`w-full px-3 py-2 text-sm font-mono focus:outline-none focus:border-neon/50 transition-colors border ${input}`}
+              />
+            </div>
           <div>
             <label className={`font-mono text-xs uppercase tracking-widest block mb-1 ${lbl}`}>Status</label>
             <select
@@ -189,8 +188,8 @@ export default function ProjectsTab() {
       </div>
 
       <div className={`border ${card}`}>
-        <div className={`grid grid-cols-[60px_1fr_120px_100px] px-4 py-2 border-b ${light ? 'border-gray-200' : 'border-site-border'}`}>
-          {['Thumbnail', 'Title', 'Status', 'Actions'].map((h) => (
+        <div className={`grid grid-cols-[1fr_120px_100px] px-4 py-2 border-b ${light ? 'border-gray-200' : 'border-site-border'}`}>
+          {['Title', 'Status', 'Actions'].map((h) => (
             <p key={h} className={`font-mono text-[10px] uppercase tracking-widest ${lbl}`}>{h}</p>
           ))}
         </div>
@@ -198,16 +197,7 @@ export default function ProjectsTab() {
           <p className="font-mono text-xs text-site-muted p-4 text-center">No projects found.</p>
         ) : (
           filtered.map((p) => (
-            <div key={p.id} className={`grid grid-cols-[60px_1fr_120px_100px] px-4 py-3 border-b items-center gap-2 ${light ? 'border-gray-100' : 'border-site-border/50'}`}>
-              <div className={`w-12 h-10 border overflow-hidden shrink-0 ${light ? 'bg-gray-100 border-gray-200' : 'bg-site-bg border-site-border'}`}>
-                {p.image ? (
-                  <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="font-mono text-[8px] text-site-muted">N/A</span>
-                  </div>
-                )}
-              </div>
+            <div key={p.id} className={`grid grid-cols-[1fr_120px_100px] px-4 py-3 border-b items-center gap-2 ${light ? 'border-gray-100' : 'border-site-border/50'}`}>
               <div className="min-w-0">
                 <p className={`font-mono text-xs font-semibold ${heading} truncate`}>{p.title}</p>
                 <p className={`font-mono text-[10px] mt-0.5 line-clamp-1 ${lbl}`}>{p.description}</p>
