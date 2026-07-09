@@ -1,8 +1,8 @@
 
 import React from 'react'
 import { ArrowRight, ExternalLink } from 'lucide-react'
-import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
+import SiteNav from '../components/SiteNav'
+import SiteFooter from '../components/SiteFooter'
 import Reveal from '../components/ui/Reveal'
 import { usePortfolio } from '../context/PortfolioContext'
 
