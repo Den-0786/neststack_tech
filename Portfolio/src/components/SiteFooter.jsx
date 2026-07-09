@@ -147,8 +147,13 @@ export default function SiteFooter() {
               NestStack_Tech
             </h3>
             <p className={`font-mono text-xs leading-relaxed ${textClass}`}>
-              Building modern web solutions with cutting-edge technologies. 
-              Focusing on performance, security, accessibility, and user experience.
+              Building modern web solutions with cutting-edge technologies.
+            </p>
+            <p className={`font-mono text-xs leading-relaxed ${textClass}`}>
+              Focusing on performance, security,
+            </p>
+            <p className={`font-mono text-xs leading-relaxed ${textClass}`}>
+              accessibility, and user experience.
             </p>
           </div>
           </Reveal>
