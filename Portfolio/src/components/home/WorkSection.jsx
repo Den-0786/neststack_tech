@@ -1,5 +1,6 @@
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, ChevronDown, ChevronUp } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
 import { usePortfolio } from '../../context/PortfolioContext'
 import Reveal from '../ui/Reveal'
 import { useTheme } from '../../context/ThemeContext'
@@ -14,6 +15,17 @@ export default function WorkSection() {
   const { data } = usePortfolio()
   const { projects } = data
   const { light } = useTheme()
+  const [expandedDesc, setExpandedDesc] = useState({})
+
+  function truncateText(text, wordLimit = 30) {
+    const words = text.split(' ')
+    if (words.length <= wordLimit) return text
+    return words.slice(0, wordLimit).join(' ') + '...'
+  }
+
+  function toggleDesc(id) {
+    setExpandedDesc(prev => ({ ...prev, [id]: !prev[id] }))
+  }
 
   console.log('WorkSection projects:', projects)
 
@@ -51,7 +63,21 @@ export default function WorkSection() {
               </div>
               <div className={`font-mono text-xs uppercase tracking-widest mb-2 ${light ? 'text-neon-light' : 'text-neon'}`}>Website</div>
               <h3 className={`font-bold text-2xl mb-3 ${light ? 'text-gray-900' : 'text-white'}`}>{featured.title}</h3>
-              <p className={`text-sm mb-6 leading-relaxed ${light ? 'text-gray-600' : 'text-gray-400'}`}>{featured.description}</p>
+              <p className={`text-sm mb-4 leading-relaxed ${light ? 'text-gray-600' : 'text-gray-400'}`}>
+                {expandedDesc[featured.id] ? featured.description : truncateText(featured.description)}
+              </p>
+              {featured.description.split(' ').length > 30 && (
+                <button
+                  onClick={() => toggleDesc(featured.id)}
+                  className={`flex items-center gap-1 font-mono text-xs uppercase tracking-widest mb-4 ${light ? 'text-neon-light hover:text-neon' : 'text-neon hover:text-neon-light'}`}
+                >
+                  {expandedDesc[featured.id] ? (
+                    <><ChevronUp size={12} /> Read Less</>
+                  ) : (
+                    <><ChevronDown size={12} /> Read More</>
+                  )}
+                </button>
+              )}
               <div className="flex gap-3">
                 {featured.live_url && featured.live_url !== '#' && (
                   <a
@@ -92,7 +118,21 @@ export default function WorkSection() {
                   </div>
                   <div className={`font-mono text-[10px] uppercase tracking-widest mb-0.5 ${light ? 'text-neon-light' : 'text-neon'}`}>Website</div>
                   <h4 className={`font-bold text-sm truncate ${light ? 'text-gray-900' : 'text-white'}`}>{p.title}</h4>
-                  <p className={`text-xs mt-0.5 line-clamp-2 ${light ? 'text-gray-500' : 'text-gray-400'}`}>{p.description}</p>
+                  <p className={`text-xs mt-0.5 leading-relaxed ${light ? 'text-gray-500' : 'text-gray-400'}`}>
+                    {expandedDesc[p.id] ? p.description : truncateText(p.description)}
+                  </p>
+                  {p.description.split(' ').length > 30 && (
+                    <button
+                      onClick={() => toggleDesc(p.id)}
+                      className={`flex items-center gap-1 font-mono text-[10px] uppercase tracking-widest mt-1 ${light ? 'text-neon-light hover:text-neon' : 'text-neon hover:text-neon-light'}`}
+                    >
+                      {expandedDesc[p.id] ? (
+                        <><ChevronUp size={10} /> Read Less</>
+                      ) : (
+                        <><ChevronDown size={10} /> Read More</>
+                      )}
+                    </button>
+                  )}
                   <div className="flex gap-2 mt-2">
                     {p.live_url && p.live_url !== '#' && (
                       <a
