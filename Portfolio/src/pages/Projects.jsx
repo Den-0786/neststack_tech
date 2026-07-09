@@ -15,6 +15,8 @@ export default function Projects() {
   const { data } = usePortfolio()
   const projects = data.projects || []
 
+  console.log('Projects page projects:', projects)
+
   return (
     <div className="min-h-screen bg-sys-bg flex flex-col">
       <Navbar />

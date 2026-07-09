@@ -53,7 +53,8 @@ export default function SiteNav() {
       }`}
     >
       <nav className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-        <RouterLink to="/" className={`font-mono font-black text-lg tracking-tight ${light ? 'text-gray-900' : 'text-white'}`}>
+        <RouterLink to="/" className={`flex items-center gap-3 font-mono font-black text-lg tracking-tight ${light ? 'text-gray-900' : 'text-white'}`}>
+          <img src="/portimages/img.jpg" alt="NestStack" className="w-8 h-8 rounded-full object-cover border-2 border-gray-300" />
           NestStack_Tech
         </RouterLink>
 

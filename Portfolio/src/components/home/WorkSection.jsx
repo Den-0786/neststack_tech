@@ -15,6 +15,8 @@ export default function WorkSection() {
   const { projects } = data
   const { light } = useTheme()
 
+  console.log('WorkSection projects:', projects)
+
   if (!projects.length) return null
 
   const [featured, ...rest] = projects
@@ -40,17 +42,6 @@ export default function WorkSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Reveal direction="up" delay={0}>
           <div className={`border group hover:border-neon/40 transition-colors ${light ? 'border-gray-200 bg-white' : 'border-site-border bg-site-card'}`}>
-            {featured.image ? (
-              <img
-                src={featured.image}
-                alt={featured.title}
-                className="w-full h-56 object-cover grayscale group-hover:grayscale-0 transition-all"
-              />
-            ) : (
-              <div className={`w-full h-56 flex items-center justify-center ${light ? 'bg-gray-100' : 'bg-site-bg'}`}>
-                <span className={`font-mono text-xs ${light ? 'text-gray-400' : 'text-site-muted'}`}>NO_IMAGE</span>
-              </div>
-            )}
             <div className="p-5">
               <div className="flex items-center gap-2 mb-2">
                 <span className={`font-mono text-xs border px-2 py-0.5 ${statusStyle(featured.status)}`}>
@@ -60,14 +51,28 @@ export default function WorkSection() {
               </div>
               <h3 className={`font-bold text-xl mb-2 ${light ? 'text-gray-900' : 'text-white'}`}>{featured.title}</h3>
               <p className={`text-sm mb-4 ${light ? 'text-gray-500' : 'text-gray-400'}`}>{featured.description}</p>
-              <a
-                href={featured.github_url || featured.live_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`font-mono text-xs flex items-center gap-1 hover:underline uppercase tracking-widest ${light ? 'text-neon-light' : 'text-neon'}`}
-              >
-                View Project <ArrowUpRight size={12} />
-              </a>
+              <div className="flex gap-2">
+                {featured.live_url && featured.live_url !== '#' && (
+                  <a
+                    href={featured.live_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`font-mono text-xs flex items-center justify-center gap-1 uppercase tracking-widest px-4 py-2 ${light ? 'bg-gray-900 text-white hover:bg-gray-700' : 'bg-neon text-black hover:bg-neon-dim'}`}
+                  >
+                    Launch Live App →
+                  </a>
+                )}
+                {featured.github_url && featured.github_url !== '#' && (
+                  <a
+                    href={featured.github_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`font-mono text-xs flex items-center justify-center gap-1 uppercase tracking-widest px-4 py-2 border ${light ? 'border-gray-900 text-gray-900 hover:bg-gray-100' : 'border-neon text-neon hover:bg-neon/10'}`}
+                  >
+                    View Source Code
+                  </a>
+                )}
+              </div>
             </div>
           </div>
           </Reveal>
@@ -78,17 +83,6 @@ export default function WorkSection() {
               <div
                 className={`border p-4 group hover:border-neon/40 transition-colors flex gap-4 items-start ${light ? 'border-gray-200 bg-white' : 'border-site-border bg-site-card'}`}
               >
-                {p.image ? (
-                  <img
-                    src={p.image}
-                    alt={p.title}
-                    className="w-24 h-16 object-cover shrink-0 grayscale group-hover:grayscale-0 transition-all"
-                  />
-                ) : (
-                  <div className={`w-24 h-16 shrink-0 flex items-center justify-center border ${light ? 'bg-gray-100 border-gray-200' : 'bg-site-bg border-site-border'}`}>
-                    <span className={`font-mono text-xs ${light ? 'text-gray-400' : 'text-site-muted'}`}>N/A</span>
-                  </div>
-                )}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <span className={`font-mono text-xs border px-1.5 py-0.5 ${statusStyle(p.status)}`}>
@@ -97,10 +91,29 @@ export default function WorkSection() {
                   </div>
                   <h4 className={`font-bold text-sm truncate ${light ? 'text-gray-900' : 'text-white'}`}>{p.title}</h4>
                   <p className={`text-xs mt-0.5 line-clamp-2 ${light ? 'text-gray-500' : 'text-gray-400'}`}>{p.description}</p>
+                  <div className="flex gap-2 mt-2">
+                    {p.live_url && p.live_url !== '#' && (
+                      <a
+                        href={p.live_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`font-mono text-[10px] flex items-center justify-center gap-1 uppercase tracking-widest px-2 py-1 ${light ? 'bg-gray-900 text-white hover:bg-gray-700' : 'bg-neon text-black hover:bg-neon-dim'}`}
+                      >
+                        Launch →
+                      </a>
+                    )}
+                    {p.github_url && p.github_url !== '#' && (
+                      <a
+                        href={p.github_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`font-mono text-[10px] flex items-center justify-center gap-1 uppercase tracking-widest px-2 py-1 border ${light ? 'border-gray-900 text-gray-900 hover:bg-gray-100' : 'border-neon text-neon hover:bg-neon/10'}`}
+                      >
+                        Source
+                      </a>
+                    )}
+                  </div>
                 </div>
-                <a href={p.github_url || p.live_url} target="_blank" rel="noopener noreferrer" className="text-site-muted hover:text-neon shrink-0 transition-colors mt-1">
-                  <ArrowUpRight size={15} />
-                </a>
               </div>
               </Reveal>
             ))}

@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import ResetPassword from './pages/ResetPassword'
 import Dashboard from './pages/Dashboard'
+import Projects from './pages/Projects'
 
 function ProtectedDashboard() {
   const { auth } = useAuth()
@@ -17,6 +18,7 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          <Route path="/projects" element={<Projects />} />
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/reset-password" element={<ResetPassword />} />
