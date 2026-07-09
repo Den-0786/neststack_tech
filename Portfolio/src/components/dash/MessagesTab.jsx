@@ -181,7 +181,7 @@ export default function MessagesTab() {
                     <div className="flex items-center justify-between gap-2 flex-wrap">
                       <div className="flex items-center gap-2 min-w-0 flex-wrap">
                         <span className={`font-mono text-xs font-bold truncate ${m.status === 'unread' ? heading : lbl}`}>
-                          {m.from}
+                          {m.from_name}
                         </span>
                         {m.type === 'alert' && <AlertTriangle size={11} className="text-red-400 shrink-0" />}
                         {m.attachments?.length > 0 && <Paperclip size={11} className="text-blue-400 shrink-0" />}
@@ -189,7 +189,7 @@ export default function MessagesTab() {
                           {badge.label}
                         </span>
                       </div>
-                      <span className={`font-mono text-[10px] shrink-0 ${lbl}`}>{fmtTime(m.time)}</span>
+                      <span className={`font-mono text-[10px] shrink-0 ${lbl}`}>{fmtTime(m.created_at)}</span>
                     </div>
                     <p className={`font-mono text-xs mt-0.5 ${m.status === 'unread' ? (light ? 'text-gray-800' : 'text-gray-200') : lbl}`}>
                       {m.subject}
@@ -207,7 +207,7 @@ export default function MessagesTab() {
                 {isOpen && (
                   <div className={`px-7 pb-4 pt-3 border-t space-y-3 ${light ? 'border-gray-100' : 'border-site-border/40'}`}>
                     <p className={`font-mono text-[11px] ${lbl}`}>
-                      From: <span className={heading}>{m.email || m.from}</span>
+                      From: <span className={heading}>{m.email || m.from_name}</span>
                     </p>
                     <pre className={`font-mono text-xs whitespace-pre-wrap leading-relaxed ${light ? 'text-gray-700' : 'text-gray-300'}`}>
                       {m.body}
