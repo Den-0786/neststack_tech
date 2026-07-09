@@ -114,7 +114,7 @@ export default function WorkSection() {
             Have an urgent project or want to collaborate? Grab a spot on my calendar.
           </p>
           <a
-            href="https://calendly.com/YOUR_USERNAME"
+            href="https://calendly.com/dennisopokuamponsah86/30min"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 font-mono text-sm font-bold bg-neon text-black px-8 py-3 uppercase tracking-widest hover:bg-neon-dim transition-colors"
