@@ -95,10 +95,14 @@ export default function VisitorStreamgraph() {
   
   const totalVisitorsAllMonths = totalVisitorsThisYear
   
-  // Format numbers to show clean display
+  // Format numbers to show compact display (e.g., 1.5M, 45.2K)
   const formatNumber = (num) => {
     if (num === 0) return '0'
-    return num.toString()
+    return new Intl.NumberFormat('en-US', {
+      notation: 'compact',
+      compactDisplay: 'short',
+      maximumFractionDigits: 1
+    }).format(num)
   }
   
   if (loading) {
@@ -139,7 +143,7 @@ export default function VisitorStreamgraph() {
             </div>
             <div>
               <p className="text-purple-300 text-xs font-medium uppercase tracking-wider">Current Month</p>
-              <p className="text-white text-2xl font-bold">{currentMonthWeeks}</p>
+              <p className="text-white text-xl md:text-2xl font-bold truncate tracking-tight">{currentMonthWeeks}</p>
             </div>
           </div>
           <p className="text-purple-200/60 text-xs">Active weeks with visitors</p>
@@ -155,7 +159,7 @@ export default function VisitorStreamgraph() {
             </div>
             <div>
               <p className="text-blue-300 text-xs font-medium uppercase tracking-wider">Year to Date</p>
-              <p className="text-white text-2xl font-bold">{formatNumber(totalVisitorsThisYear)}</p>
+              <p className="text-white text-xl md:text-2xl font-bold truncate tracking-tight">{formatNumber(totalVisitorsThisYear)}</p>
             </div>
           </div>
           <p className="text-blue-200/60 text-xs">Total visitors this year</p>
@@ -171,7 +175,7 @@ export default function VisitorStreamgraph() {
             </div>
             <div>
               <p className="text-teal-300 text-xs font-medium uppercase tracking-wider">All Time</p>
-              <p className="text-white text-2xl font-bold">{formatNumber(totalVisitorsAllMonths)}</p>
+              <p className="text-white text-xl md:text-2xl font-bold truncate tracking-tight">{formatNumber(totalVisitorsAllMonths)}</p>
             </div>
           </div>
           <p className="text-teal-200/60 text-xs">Total visitors all time</p>
