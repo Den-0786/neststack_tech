@@ -114,8 +114,8 @@ router.put('/projects/:id', async (req, res) => {
     const { title, description, image, tags, github_url, live_url, status } = req.body
     console.log('PUT /projects/:id received:', { id: req.params.id, title, description, image, tags, github_url, live_url, status })
     
-    // Handle tags as array or string
-    const tagsValue = Array.isArray(tags) ? JSON.stringify(tags) : tags
+    // Handle tags as array or string - convert array to comma-separated string
+    const tagsValue = Array.isArray(tags) ? tags.join(', ') : tags
     
     const result = await pool.query(
       'UPDATE projects SET title = $1, description = $2, image = $3, tags = $4, github_url = $5, live_url = $6, status = $7 WHERE id = $8 RETURNING *',
