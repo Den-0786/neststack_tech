@@ -138,7 +138,7 @@ export default function SiteFooter() {
   return (
     <footer className={`w-full py-12 md:py-16 ${bgClass}`}>
       <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-start md:items-center gap-8 md:gap-12">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 md:gap-12">
           
           {/* Left Section - Branding */}
           <Reveal direction="left" delay={0}>
@@ -187,7 +187,7 @@ export default function SiteFooter() {
 
           {/* Right Section - Social Links */}
           <Reveal direction="right" delay={200}>
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 md:w-1/4">
             <h4 className={`font-mono text-xs font-bold uppercase tracking-wider mb-4 ${headingClass}`}>
               Connect
             </h4>
