@@ -24,7 +24,7 @@ export default function CertificatesSection() {
   if (!visible.length) return null
 
   return (
-    <section id="certificates" className={`border-t transition-colors duration-700 ${light ? 'bg-gray-50 border-gray-200' : 'bg-site-bg border-site-border'}`}>
+    <section className={`border-t transition-colors duration-700 ${light ? 'bg-gray-50 border-gray-200' : 'bg-site-bg border-site-border'}`}>
       <div className="max-w-6xl mx-auto px-6 py-20">
         <div className={`flex items-end justify-between border-b pb-4 mb-8 ${light ? 'border-gray-200' : 'border-site-border'}`}>
           <div>
