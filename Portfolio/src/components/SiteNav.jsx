@@ -41,6 +41,7 @@ export default function SiteNav() {
   }, [])
 
   function scrollTo(id) {
+    setActiveSection(id)
     scroller.scrollTo(id, { smooth: true, duration: 500, offset: -56 })
   }
 
