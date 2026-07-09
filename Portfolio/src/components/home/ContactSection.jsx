@@ -148,16 +148,7 @@ export default function ContactSection() {
             <div className="flex items-center justify-between mb-5">
               <span className={`font-mono text-xs uppercase tracking-widest ${light ? 'text-neon-light' : 'text-neon'}`}>[CONTACT_PROTOCOL]</span>
             </div>
-            {sent ? (
-              <div className="h-full flex flex-col items-center justify-center py-12 text-center">
-                <div className="w-10 h-10 rounded-full border-2 border-neon flex items-center justify-center mb-4">
-                  <Send size={16} className="text-neon" />
-                </div>
-                <p className={`font-mono text-sm uppercase tracking-widest ${light ? 'text-neon-light' : 'text-neon'}`}>Message Transmitted.</p>
-                <p className="font-mono text-xs text-site-muted mt-2">Signal received. Standing by for response.</p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className={`font-mono text-xs uppercase tracking-widest block mb-1 ${light ? 'text-gray-400' : 'text-site-muted'}`}>
@@ -259,7 +250,6 @@ export default function ContactSection() {
                   Transmit Message <Send size={14} />
                 </button>
               </form>
-            )}
           </div>
           </Reveal>
         </div>
