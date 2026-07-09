@@ -138,11 +138,11 @@ export default function SiteFooter() {
   return (
     <footer className={`w-full py-12 md:py-16 ${bgClass}`}>
       <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 md:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 items-start">
           
           {/* Left Section - Branding */}
           <Reveal direction="left" delay={0}>
-          <div className="md:w-1/4">
+          <div className="max-w-sm">
             <h3 className={`font-mono text-lg font-bold uppercase tracking-wider mb-4 ${headingClass}`}>
               NestStack_Tech
             </h3>
@@ -160,11 +160,10 @@ export default function SiteFooter() {
 
           {/* Middle Section - Sitemap */}
           <Reveal direction="up" delay={100}>
-          <div className="flex-1 flex justify-center">
-            <div className="flex-shrink-0">
-              <h4 className={`font-mono text-xs font-bold uppercase tracking-wider mb-4 ${headingClass}`}>
-                Sitemap
-              </h4>
+          <div className="flex flex-col items-center">
+            <h4 className={`font-mono text-xs font-bold uppercase tracking-wider mb-4 ${headingClass}`}>
+              Sitemap
+            </h4>
             <div className="flex flex-col space-y-2">
               {[
                 { label: 'Home', href: '/' },
@@ -181,17 +180,16 @@ export default function SiteFooter() {
                 </a>
               ))}
             </div>
-            </div>
           </div>
           </Reveal>
 
           {/* Right Section - Social Links */}
           <Reveal direction="right" delay={200}>
-          <div className="flex-shrink-0 md:w-1/4">
+          <div className="flex flex-col items-center">
             <h4 className={`font-mono text-xs font-bold uppercase tracking-wider mb-4 ${headingClass}`}>
               Connect
             </h4>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-row gap-4">
               {loading ? (
                 <p className={`font-mono text-xs ${textClass}`}>Loading...</p>
               ) : socialLinks.length > 0 ? (
