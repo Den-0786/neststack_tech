@@ -257,33 +257,56 @@ router.get('/visitors/weekly', async (req, res) => {
         month: months[monthIndex],
       }
       
-      // Get weekly breakdown for this month
+      // Get visitor count for each week of this month
       const startDate = new Date(currentYear, monthIndex, 1)
       const endDate = new Date(currentYear, monthIndex + 1, 0)
       
-      const weeklyResult = await pool.query(
-        `SELECT 
-           EXTRACT(WEEK FROM visit_date) as week_num,
-           COUNT(DISTINCT visitor_id) as visitor_count
-         FROM visitors
-         WHERE visit_date >= $1 AND visit_date <= $2
-         GROUP BY EXTRACT(WEEK FROM visit_date)
-         ORDER BY week_num`,
-        [startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]]
+      // Week 1: days 1-7
+      const week1Start = new Date(currentYear, monthIndex, 1).toISOString().split('T')[0]
+      const week1End = new Date(currentYear, monthIndex, 7).toISOString().split('T')[0]
+      const week1Result = await pool.query(
+        `SELECT COUNT(DISTINCT visitor_id) as count FROM visitors WHERE visit_date >= $1 AND visit_date <= $2`,
+        [week1Start, week1End]
       )
+      monthData.week1 = week1Result.rows[0]?.count || 0
       
-      // Distribute weekly data across weeks 1-5
-      const weeklyData = weeklyResult.rows
-      if (weeklyData.length > 0) {
-        weeklyData.forEach((row, index) => {
-          const weekNum = Math.min(index + 1, 5)
-          monthData[`week${weekNum}`] = row.visitor_count
-        })
-      } else {
-        // If no data, set to 0
-        for (let week = 1; week <= 4; week++) {
-          monthData[`week${week}`] = 0
-        }
+      // Week 2: days 8-14
+      const week2Start = new Date(currentYear, monthIndex, 8).toISOString().split('T')[0]
+      const week2End = new Date(currentYear, monthIndex, 14).toISOString().split('T')[0]
+      const week2Result = await pool.query(
+        `SELECT COUNT(DISTINCT visitor_id) as count FROM visitors WHERE visit_date >= $1 AND visit_date <= $2`,
+        [week2Start, week2End]
+      )
+      monthData.week2 = week2Result.rows[0]?.count || 0
+      
+      // Week 3: days 15-21
+      const week3Start = new Date(currentYear, monthIndex, 15).toISOString().split('T')[0]
+      const week3End = new Date(currentYear, monthIndex, 21).toISOString().split('T')[0]
+      const week3Result = await pool.query(
+        `SELECT COUNT(DISTINCT visitor_id) as count FROM visitors WHERE visit_date >= $1 AND visit_date <= $2`,
+        [week3Start, week3End]
+      )
+      monthData.week3 = week3Result.rows[0]?.count || 0
+      
+      // Week 4: days 22-28
+      const week4Start = new Date(currentYear, monthIndex, 22).toISOString().split('T')[0]
+      const week4End = new Date(currentYear, monthIndex, 28).toISOString().split('T')[0]
+      const week4Result = await pool.query(
+        `SELECT COUNT(DISTINCT visitor_id) as count FROM visitors WHERE visit_date >= $1 AND visit_date <= $2`,
+        [week4Start, week4End]
+      )
+      monthData.week4 = week4Result.rows[0]?.count || 0
+      
+      // Week 5: days 29-31 (if applicable)
+      const daysInMonth = new Date(currentYear, monthIndex + 1, 0).getDate()
+      if (daysInMonth > 28) {
+        const week5Start = new Date(currentYear, monthIndex, 29).toISOString().split('T')[0]
+        const week5End = new Date(currentYear, monthIndex, daysInMonth).toISOString().split('T')[0]
+        const week5Result = await pool.query(
+          `SELECT COUNT(DISTINCT visitor_id) as count FROM visitors WHERE visit_date >= $1 AND visit_date <= $2`,
+          [week5Start, week5End]
+        )
+        monthData.week5 = week5Result.rows[0]?.count || 0
       }
       
       data.push(monthData)
