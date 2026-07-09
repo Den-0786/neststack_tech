@@ -29,32 +29,6 @@ async function fetchTrafficAnalyticsData() {
   }
 }
 
-// Fallback to mock data if no real data available
-function generateMockTrafficData() {
-  const hours = ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', 
-                '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
-                '12:00', '13:00', '14:00', '15:00', '16:00', '17:00',
-                '18:00', '19:00', '20:00', '21:00', '22:00', '23:00']
-  
-  const data = []
-  
-  for (let i = 0; i < 24; i++) {
-    const hourData = {
-      hour: hours[i],
-    }
-    
-    // Generate realistic traffic patterns with peaks during business hours
-    const baseTraffic = 20 + Math.sin((i - 6) * 0.3) * 30 + Math.random() * 10
-    hourData['organic'] = Math.max(5, Math.round(baseTraffic * 0.4))
-    hourData['direct'] = Math.max(5, Math.round(baseTraffic * 0.35))
-    hourData['referral'] = Math.max(5, Math.round(baseTraffic * 0.25))
-    
-    data.push(hourData)
-  }
-  
-  return data
-}
-
 // Custom tooltip component
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload || !payload.length) return null
@@ -98,13 +72,7 @@ export default function TrafficStreamgraph() {
     async function loadData() {
       setLoading(true)
       const realData = await fetchTrafficAnalyticsData()
-      
-      if (realData.length === 0) {
-        const mockData = generateMockTrafficData()
-        setData(mockData)
-      } else {
-        setData(realData)
-      }
+      setData(realData)
       setLoading(false)
     }
     

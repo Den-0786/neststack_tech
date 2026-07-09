@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { 
   AreaChart, 
   Area, 
@@ -18,7 +18,6 @@ async function fetchWeeklyVisitorData() {
     }
     const data = await response.json()
     
-    // If no real data, return empty array
     if (!Array.isArray(data) || data.length === 0) {
       return []
     }
@@ -28,34 +27,6 @@ async function fetchWeeklyVisitorData() {
     console.error('Failed to fetch visitor data:', error)
     return []
   }
-}
-
-// Fallback to mock data if no real data available
-function generateMockWeeklyData() {
-  const currentMonth = new Date().getMonth()
-  const months = ['January', 'February', 'March', 'April', 'May', 'June', 
-                  'July', 'August', 'September', 'October', 'November', 'December']
-  
-  const data = []
-  
-  for (let monthIndex = 0; monthIndex <= currentMonth; monthIndex++) {
-    const monthData = {
-      month: months[monthIndex],
-    }
-    
-    const weeksInMonth = [4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5][monthIndex] || 4
-    const baseVisitors = 100 + Math.random() * 50
-    
-    for (let week = 1; week <= weeksInMonth; week++) {
-      const weekKey = `week${week}`
-      const variance = Math.sin(monthIndex * 0.5 + week * 0.8) * 30 + Math.random() * 20
-      monthData[weekKey] = Math.max(20, Math.round(baseVisitors + variance))
-    }
-    
-    data.push(monthData)
-  }
-  
-  return data
 }
 
 // Custom tooltip component
@@ -102,14 +73,7 @@ export default function VisitorStreamgraph() {
     async function loadData() {
       setLoading(true)
       const realData = await fetchWeeklyVisitorData()
-      
-      // If no real data available, use mock data
-      if (realData.length === 0) {
-        const mockData = generateMockWeeklyData()
-        setData(mockData)
-      } else {
-        setData(realData)
-      }
+      setData(realData)
       setLoading(false)
     }
     
@@ -130,6 +94,12 @@ export default function VisitorStreamgraph() {
   }, 0)
   
   const totalVisitorsAllMonths = totalVisitorsThisYear
+  
+  // Format numbers to show clean display
+  const formatNumber = (num) => {
+    if (num === 0) return '0'
+    return num.toString()
+  }
   
   if (loading) {
     return (
@@ -185,7 +155,7 @@ export default function VisitorStreamgraph() {
             </div>
             <div>
               <p className="text-blue-300 text-xs font-medium uppercase tracking-wider">Year to Date</p>
-              <p className="text-white text-2xl font-bold">{totalVisitorsThisYear.toLocaleString()}</p>
+              <p className="text-white text-2xl font-bold">{formatNumber(totalVisitorsThisYear)}</p>
             </div>
           </div>
           <p className="text-blue-200/60 text-xs">Total visitors this year</p>
@@ -201,7 +171,7 @@ export default function VisitorStreamgraph() {
             </div>
             <div>
               <p className="text-teal-300 text-xs font-medium uppercase tracking-wider">All Time</p>
-              <p className="text-white text-2xl font-bold">{totalVisitorsAllMonths.toLocaleString()}</p>
+              <p className="text-white text-2xl font-bold">{formatNumber(totalVisitorsAllMonths)}</p>
             </div>
           </div>
           <p className="text-teal-200/60 text-xs">Total visitors all time</p>
