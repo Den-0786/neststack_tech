@@ -81,6 +81,13 @@ export default function MessagesTab() {
     if (msg.status === 'unread') markRead(id)
   }
 
+  function handleDelete(id) {
+    if (window.confirm('Are you sure you want to delete this message? This action cannot be undone.')) {
+      deleteMessage(id)
+      setExpanded(null)
+    }
+  }
+
   const emptyLabels = {
     all: 'No messages yet.', unread: 'No unread messages.',
     read: 'No approved messages.', attended: 'No attended messages.',
@@ -229,7 +236,7 @@ export default function MessagesTab() {
                         </button>
                       )}
                       <button
-                        onClick={(e) => { e.stopPropagation(); deleteMessage(m.id); setExpanded(null) }}
+                        onClick={(e) => { e.stopPropagation(); handleDelete(m.id) }}
                         className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest px-3 py-1.5 border border-red-400/40 text-red-400 hover:bg-red-400/10 transition-colors"
                       >
                         <Trash2 size={11} /> Delete

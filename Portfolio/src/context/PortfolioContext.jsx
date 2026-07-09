@@ -135,15 +135,19 @@ export function PortfolioProvider({ children }) {
           description: fields.desc,
           image: fields.img,
           tags: fields.tags,
-          githubUrl: fields.github,
-          liveUrl: fields.liveUrl,
+          github_url: fields.github,
+          live_url: fields.liveUrl || '#',
+          status: fields.status || 'ACTIVE',
         }),
       })
       if (response.ok) {
         await fetchPortfolio()
+        return true
       }
+      return false
     } catch (error) {
       console.error('Failed to update project:', error)
+      return false
     }
   }
 

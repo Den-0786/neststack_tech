@@ -53,6 +53,12 @@ export default function SettingsTab({ onClose }) {
   const [showPin, setShowPin] = useState(false)
 
   function flash() { setSaved(true); setTimeout(() => setSaved(false), 2500) }
+  
+  function handleDeleteSkill(id) {
+    if (window.confirm('Are you sure you want to delete this skill group? This action cannot be undone.')) {
+      deleteSkillGroup(id)
+    }
+  }
   const inp_cls = `w-full px-3 py-2.5 text-sm font-mono focus:outline-none focus:border-neon/50 transition-colors border ${inp}`
   const small_label = `font-mono text-[10px] uppercase tracking-widest block mb-1.5 ${lbl}`
 
@@ -172,7 +178,7 @@ export default function SettingsTab({ onClose }) {
             </div>
             <div>
               <label className={small_label}>Roles (comma sep)</label>
-              <input value={about.roles} onChange={(e) => setAbout((a) => ({ ...a, roles: e.target.value }))} placeholder="Frontend Dev, Cybersecurity..." className={inp_cls} />
+              <textarea value={about.roles} onChange={(e) => setAbout((a) => ({ ...a, roles: e.target.value }))} placeholder="Frontend Dev, Cybersecurity..." rows={2} className={`w-full px-3 py-2.5 text-sm font-mono focus:outline-none focus:border-neon/50 transition-colors resize-y border ${inp}`} />
             </div>
             <div>
               <label className={small_label}>CV URL</label>
@@ -203,7 +209,7 @@ export default function SettingsTab({ onClose }) {
                 <p className={`font-mono text-xs font-semibold ${heading}`}>{g.category}</p>
                 <p className={`font-mono text-[10px] mt-0.5 ${lbl}`}>{g.items.join(', ')}</p>
               </div>
-              <button onClick={() => deleteSkillGroup(g.id)} className="text-red-400/50 hover:text-red-400 shrink-0 ml-3 transition-colors"><Trash2 size={13} /></button>
+              <button onClick={() => handleDeleteSkill(g.id)} className="text-red-400/50 hover:text-red-400 shrink-0 ml-3 transition-colors"><Trash2 size={13} /></button>
             </div>
           ))}
         </div>
@@ -211,7 +217,7 @@ export default function SettingsTab({ onClose }) {
           <p className={`font-mono text-[10px] uppercase tracking-widest font-semibold ${accent}`}>Add New Skill Group</p>
           <form onSubmit={saveSkill} className="space-y-2">
             <input value={newSkill.category} onChange={(e) => setNewSkill((s) => ({ ...s, category: e.target.value }))} placeholder="Category name (e.g. CORE ARCHITECTURE)" className={inp_cls} />
-            <input value={newSkill.items} onChange={(e) => setNewSkill((s) => ({ ...s, items: e.target.value }))} placeholder="Skills, comma separated (e.g. React, Node.js)" className={inp_cls} />
+            <textarea value={newSkill.items} onChange={(e) => setNewSkill((s) => ({ ...s, items: e.target.value }))} placeholder="Skills, comma separated (e.g. React, Node.js)" rows={2} className={`w-full px-3 py-2.5 text-sm font-mono focus:outline-none focus:border-neon/50 transition-colors resize-y border ${inp}`} />
             <button type="submit" className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest bg-neon text-black px-4 py-2 hover:bg-neon-dim transition-colors">
               <Plus size={12} /> Add Group
             </button>

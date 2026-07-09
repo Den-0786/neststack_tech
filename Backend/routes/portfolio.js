@@ -109,6 +109,20 @@ router.post('/projects', async (req, res) => {
   }
 })
 
+router.put('/projects/:id', async (req, res) => {
+  try {
+    const { title, description, image, tags, github_url, live_url, status } = req.body
+    const result = await pool.query(
+      'UPDATE projects SET title = $1, description = $2, image = $3, tags = $4, github_url = $5, live_url = $6, status = $7 WHERE id = $8 RETURNING *',
+      [title, description, image, tags, github_url, live_url, status || 'ACTIVE', req.params.id]
+    )
+    res.json(result.rows[0])
+  } catch (error) {
+    console.error('Update project error:', error)
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
 router.delete('/projects/:id', async (req, res) => {
   try {
     await pool.query('DELETE FROM projects WHERE id = $1', [req.params.id])

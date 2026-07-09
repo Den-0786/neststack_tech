@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Search, Plus, FileText, CheckCircle, Clock, Archive, Trash2 } from 'lucide-react'
+import { Search, Plus, FileText, CheckCircle, Clock, Archive, Trash2, Edit } from 'lucide-react'
 import { useDashTheme } from '../../context/DashThemeContext'
 import { usePortfolio } from '../../context/PortfolioContext'
 import S3ImageUpload from '../ui/S3ImageUpload'
@@ -19,7 +19,7 @@ function statusIcon(s) {
 
 export default function CertificatesTab() {
   const light = useDashTheme()
-  const { data, addCertificate, deleteCertificate } = usePortfolio()
+  const { data, addCertificate, deleteCertificate, updateCertificate } = usePortfolio()
   const certs = data.certificates
   const card = light ? 'bg-white border-gray-200' : 'bg-site-card border-site-border'
   const lbl = light ? 'text-gray-500' : 'text-site-muted'
@@ -28,8 +28,10 @@ export default function CertificatesTab() {
   const input = light ? 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400' : 'bg-site-bg border-site-border text-white placeholder-site-muted'
   const [query, setQuery] = useState('')
   const [showForm, setShowForm] = useState(false)
+  const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState({ name: '', issuer: '', date: '', status: 'VALID', imgUrl: '' })
   const [activeFilter, setActiveFilter] = useState('All Assets')
+  const [message, setMessage] = useState({ type: '', text: '' })
 
   const filters = ['All Assets', 'SSL/TLS', 'Security Certs']
 
@@ -46,6 +48,41 @@ export default function CertificatesTab() {
     setShowForm(false)
   }
 
+  function handleEdit(e) {
+    e.preventDefault()
+    if (!form.name) return
+    updateCertificate(editingId, form)
+    setForm({ name: '', issuer: '', date: '', status: 'VALID', imgUrl: '' })
+    setShowForm(false)
+    setEditingId(null)
+    setMessage({ type: 'success', text: 'Certificate updated successfully' })
+    setTimeout(() => setMessage({ type: '', text: '' }), 3000)
+  }
+
+  function handleDelete(id) {
+    if (window.confirm('Are you sure you want to delete this certificate? This action cannot be undone.')) {
+      deleteCertificate(id)
+    }
+  }
+
+  function startEdit(cert) {
+    setForm({
+      name: cert.title,
+      issuer: cert.issuer,
+      date: cert.date,
+      status: 'VALID',
+      imgUrl: cert.image
+    })
+    setEditingId(cert.id)
+    setShowForm(true)
+  }
+
+  function resetForm() {
+    setForm({ name: '', issuer: '', date: '', status: 'VALID', imgUrl: '' })
+    setShowForm(false)
+    setEditingId(null)
+  }
+
   const active = certs.filter(c => c.status === 'VALID' || c.status === 'LIFETIME').length
   const expiring = certs.filter(c => c.status === 'RENEWAL_REQ').length
   const pending = certs.filter(c => c.status === 'ARCHIVED').length
@@ -56,6 +93,12 @@ export default function CertificatesTab() {
         <h2 className={`font-bold text-lg ${heading}`}>Certificates Registry</h2>
         <p className={`font-mono text-xs mt-0.5 ${lbl}`}>Manage secure authentication assets and compliance credentials.</p>
       </div>
+
+      {message.text && (
+        <div className={`border px-4 py-2 font-mono text-xs ${message.type === 'success' ? 'bg-green-500/10 border-green-500/30 text-green-400' : 'bg-red-500/10 border-red-500/30 text-red-400'}`}>
+          {message.text}
+        </div>
+      )}
 
       <div className={`flex items-center gap-2 border px-4 py-3 ${card}`}>
         <Search size={14} className={`shrink-0 ${lbl}`} />
@@ -75,8 +118,8 @@ export default function CertificatesTab() {
       </button>
 
       {showForm && (
-        <form onSubmit={handleAdd} className={`border border-neon/30 p-5 space-y-3 ${light ? 'bg-white' : 'bg-site-card'}`}>
-          <p className={`font-mono text-xs uppercase tracking-widest mb-2 ${accent}`}>[NEW_CERT]</p>
+        <form onSubmit={editingId ? handleEdit : handleAdd} className={`border border-neon/30 p-5 space-y-3 ${light ? 'bg-white' : 'bg-site-card'}`}>
+          <p className={`font-mono text-xs uppercase tracking-widest mb-2 ${accent}`}>[{editingId ? 'EDIT_CERT' : 'NEW_CERT'}]</p>
           {[
             { key: 'name', label: 'Certificate Name', placeholder: 'e.g. AWS Solutions Architect' },
             { key: 'issuer', label: 'Issuer', placeholder: 'e.g. Amazon Web Services' },
@@ -115,8 +158,8 @@ export default function CertificatesTab() {
             </select>
           </div>
           <div className="flex gap-2">
-            <button type="submit" className="flex-1 bg-neon text-black font-mono font-bold text-xs uppercase tracking-widest py-3 hover:bg-neon-dim transition-colors">Save</button>
-            <button type="button" onClick={() => setShowForm(false)} className="flex-1 border border-site-border text-site-muted font-mono text-xs uppercase tracking-widest py-3">Cancel</button>
+            <button type="submit" className="flex-1 bg-neon text-black font-mono font-bold text-xs uppercase tracking-widest py-3 hover:bg-neon-dim transition-colors">{editingId ? 'Update' : 'Save'}</button>
+            <button type="button" onClick={resetForm} className="flex-1 border border-site-border text-site-muted font-mono text-xs uppercase tracking-widest py-3">Cancel</button>
           </div>
         </form>
       )}
@@ -141,7 +184,7 @@ export default function CertificatesTab() {
             <div className="flex items-start justify-between gap-2">
               <FileText size={16} className={`shrink-0 mt-0.5 opacity-50 ${accent}`} />
               <div className="flex-1 min-w-0">
-                <p className={`font-mono text-sm font-semibold ${heading}`}>{c.name}</p>
+                <p className={`font-mono text-sm font-semibold ${heading}`}>{c.title}</p>
                 <p className={`font-mono text-xs mt-0.5 ${accent}`}>{c.issuer}</p>
                 <p className={`font-mono text-[10px] mt-1 uppercase tracking-widest ${lbl}`}>
                   Issue Date: {c.date}
@@ -151,9 +194,14 @@ export default function CertificatesTab() {
                 <span className={`flex items-center gap-1 font-mono text-[10px] border px-2 py-1 ${statusStyle(c.status)}`}>
                   {statusIcon(c.status)} {c.status}
                 </span>
-                <button onClick={() => deleteCertificate(c.id)} className="text-red-500/50 hover:text-red-400 transition-colors">
-                  <Trash2 size={12} />
-                </button>
+                <div className="flex gap-2">
+                  <button onClick={() => startEdit(c)} className="text-blue-400/50 hover:text-blue-400 transition-colors" title="Edit">
+                    <Edit size={12} />
+                  </button>
+                  <button onClick={() => handleDelete(c.id)} className="text-red-500/50 hover:text-red-400 transition-colors" title="Delete">
+                    <Trash2 size={12} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
