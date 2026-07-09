@@ -182,4 +182,64 @@ router.post('/reset', async (req, res) => {
   }
 })
 
+// Track visitor
+router.post('/visitors', async (req, res) => {
+  try {
+    const { visitor_id } = req.body
+    const ip_address = req.ip || req.headers['x-forwarded-for'] || null
+    const user_agent = req.headers['user-agent'] || null
+    const visit_date = new Date().toISOString().split('T')[0]
+
+    await pool.query(
+      `INSERT INTO visitors (visitor_id, visit_date, ip_address, user_agent) 
+       VALUES ($1, $2, $3, $4) 
+       ON CONFLICT (visitor_id, visit_date) DO NOTHING`,
+      [visitor_id, visit_date, ip_address, user_agent]
+    )
+
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Track visitor error:', error)
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
+// Get visitor stats
+router.get('/visitors/stats', async (req, res) => {
+  try {
+    const today = new Date().toISOString().split('T')[0]
+    
+    // Daily unique visitors for today
+    const dailyResult = await pool.query(
+      `SELECT COUNT(DISTINCT visitor_id) as count 
+       FROM visitors 
+       WHERE visit_date = $1`,
+      [today]
+    )
+
+    // Monthly unique visitors (last 30 days)
+    const monthlyResult = await pool.query(
+      `SELECT COUNT(DISTINCT visitor_id) as count 
+       FROM visitors 
+       WHERE visit_date >= CURRENT_DATE - INTERVAL '30 days'`
+    )
+
+    // Annual unique visitors (last 365 days)
+    const annualResult = await pool.query(
+      `SELECT COUNT(DISTINCT visitor_id) as count 
+       FROM visitors 
+       WHERE visit_date >= CURRENT_DATE - INTERVAL '365 days'`
+    )
+
+    res.json({
+      daily: dailyResult.rows[0].count,
+      monthly: monthlyResult.rows[0].count,
+      annual: annualResult.rows[0].count,
+    })
+  } catch (error) {
+    console.error('Get visitor stats error:', error)
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
 module.exports = router

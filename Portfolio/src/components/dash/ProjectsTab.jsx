@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Search, Plus, Rocket, Cloud, Zap, Trash2, Edit } from 'lucide-react'
 import { usePortfolio } from '../../context/PortfolioContext'
 import { useDashTheme } from '../../context/DashThemeContext'
+import { useToast } from '../../context/ToastContext'
 import S3ImageUpload from '../ui/S3ImageUpload'
 
 const statusStyle = (s) => {
@@ -14,6 +15,7 @@ const statusStyle = (s) => {
 export default function ProjectsTab() {
   const { data, addProject, deleteProject, updateProject } = usePortfolio()
   const light = useDashTheme()
+  const toast = useToast()
   const card = light ? 'bg-white border-gray-200' : 'bg-site-card border-site-border'
   const lbl = light ? 'text-gray-500' : 'text-site-muted'
   const heading = light ? 'text-gray-900' : 'text-white'
@@ -23,7 +25,6 @@ export default function ProjectsTab() {
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState({ title: '', desc: '', tags: '', github_url: '', live_url: '', status: 'ACTIVE' })
-  const [message, setMessage] = useState({ type: '', text: '' })
 
   const filtered = data.projects.filter(
     (p) =>
@@ -35,6 +36,7 @@ export default function ProjectsTab() {
     e.preventDefault()
     if (!form.title) return
     addProject({ ...form, tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean) })
+    toast.success('Project Added', 'New project has been created successfully.')
     resetForm()
   }
 
@@ -43,12 +45,10 @@ export default function ProjectsTab() {
     if (!form.title) return
     const success = await updateProject(editingId, { ...form, tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean) })
     if (success) {
-      setMessage({ type: 'success', text: 'Project updated successfully' })
+      toast.success('Project Updated', 'Project has been updated successfully.')
       resetForm()
-      setTimeout(() => setMessage({ type: '', text: '' }), 3000)
     } else {
-      setMessage({ type: 'error', text: 'Failed to update project' })
-      setTimeout(() => setMessage({ type: '', text: '' }), 3000)
+      toast.error('Update Failed', 'Failed to update project. Please try again.')
     }
   }
 
@@ -74,16 +74,12 @@ export default function ProjectsTab() {
   function handleDelete(id) {
     if (window.confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
       deleteProject(id)
+      toast.success('Project Deleted', 'Project has been removed successfully.')
     }
   }
 
   return (
     <div className="px-5 py-5 space-y-4">
-      {message.text && (
-        <div className={`border px-4 py-2 font-mono text-xs ${message.type === 'success' ? 'bg-green-500/10 border-green-500/30 text-green-400' : 'bg-red-500/10 border-red-500/30 text-red-400'}`}>
-          {message.text}
-        </div>
-      )}
       <div className={`flex items-center gap-2 border px-4 py-3 ${card}`}>
         <Search size={14} className={`shrink-0 ${lbl}`} />
         <input

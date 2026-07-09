@@ -8,6 +8,13 @@ import SiteFooter from '../components/SiteFooter'
 import ScrollToTop from '../components/ScrollToTop'
 import Reveal from '../components/ui/Reveal'
 import { useTheme } from '../context/ThemeContext'
+import { useEffect } from 'react'
+import { trackVisitor } from '../utils/visitorTracking'
+
+
+  useEffect(() => {
+    trackVisitor()
+  }, [])
 
 export default function Home() {
   const { light } = useTheme()

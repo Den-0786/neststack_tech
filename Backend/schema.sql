@@ -74,6 +74,17 @@ CREATE TABLE messages (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Visitors table to track daily unique visitors
+CREATE TABLE visitors (
+  id SERIAL PRIMARY KEY,
+  visitor_id VARCHAR(255) NOT NULL,
+  visit_date DATE NOT NULL,
+  ip_address VARCHAR(50),
+  user_agent TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(visitor_id, visit_date)
+);
+
 -- Note: Initial admin user will be created via API endpoint
 -- Use POST /api/auth/register to create the first user (if you add registration)
 -- Or insert manually with bcrypt hashed password

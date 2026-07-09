@@ -1,7 +1,8 @@
 import { TrendingUp, Calendar, Globe, Plus } from 'lucide-react'
 import { usePortfolio } from '../../context/PortfolioContext'
 import { useDashTheme } from '../../context/DashThemeContext'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { getVisitorStats } from '../../utils/visitorTracking'
 
 const streamLayers = [
   {
@@ -57,6 +58,12 @@ export default function OverviewTab() {
   const light = useDashTheme()
   const [hoveredStream, setHoveredStream] = useState(null)
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0, flip: false })
+  const [visitorStats, setVisitorStats] = useState({ daily: 0, monthly: 0, annual: 0 })
+
+  useEffect(() => {
+    getVisitorStats().then(setVisitorStats)
+  }, [])
+
   const card = light ? 'bg-white border-gray-200' : 'bg-site-card border-site-border'
   const label = light ? 'text-gray-500' : 'text-site-muted'
   const heading = light ? 'text-gray-900' : 'text-white'
@@ -65,9 +72,9 @@ export default function OverviewTab() {
   const moduleRow = light ? 'border-gray-200' : 'border-site-border'
 
   const stats = [
-    { label: 'Daily Visits', value: data.bio.name ? '0' : 'N/A', change: 'Awaiting data', icon: TrendingUp },
-    { label: 'Monthly Reach', value: data.bio.name ? '0' : 'N/A', change: 'Awaiting data', icon: Calendar },
-    { label: 'Annual Traffic', value: data.bio.name ? '0' : 'N/A', change: 'Awaiting data', icon: Globe },
+    { label: 'Daily Visits', value: data.bio.name ? visitorStats.daily : 'N/A', change: 'Unique visitors today', icon: TrendingUp },
+    { label: 'Monthly Reach', value: data.bio.name ? visitorStats.monthly : 'N/A', change: 'Last 30 days', icon: Calendar },
+    { label: 'Annual Traffic', value: data.bio.name ? visitorStats.annual : 'N/A', change: 'Last 365 days', icon: Globe },
   ]
 
   const modules = data.skills.length > 0

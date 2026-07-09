@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Mail, FileText, Trash2, CheckCheck, ChevronDown, ChevronUp, Paperclip, AlertTriangle, CheckCircle2, Clock } from 'lucide-react'
 import { useDashTheme } from '../../context/DashThemeContext'
 import { useMessages } from '../../context/MessagesContext'
+import { useToast } from '../../context/ToastContext'
 
 function fmtTime(iso) {
   try {
@@ -48,6 +49,7 @@ const TABS = [
 export default function MessagesTab() {
   const light = useDashTheme()
   const { messages, markRead, markAttended, markAllRead, deleteMessage, unreadCount, readCount, attendedCount } = useMessages()
+  const toast = useToast()
   const [tab, setTab] = useState('all')
   const [expanded, setExpanded] = useState(null)
 
@@ -78,12 +80,16 @@ export default function MessagesTab() {
 
   function toggle(id, msg) {
     setExpanded((prev) => (prev === id ? null : id))
-    if (msg.status === 'unread') markRead(id)
+    if (msg.status === 'unread') {
+      markRead(id)
+      toast.info('Message Read', 'Message marked as read.')
+    }
   }
 
   function handleDelete(id) {
     if (window.confirm('Are you sure you want to delete this message? This action cannot be undone.')) {
       deleteMessage(id)
+      toast.success('Message Deleted', 'Message has been removed successfully.')
       setExpanded(null)
     }
   }
@@ -105,7 +111,10 @@ export default function MessagesTab() {
         </div>
         {unreadCount > 0 && (
           <button
-            onClick={markAllRead}
+            onClick={() => {
+              markAllRead()
+              toast.success('All Marked Read', 'All messages have been marked as read.')
+            }}
             className={`flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest px-3 py-1.5 border transition-colors ${light ? 'border-gray-200 text-gray-500 hover:text-gray-900' : 'border-site-border text-site-muted hover:text-white'}`}
           >
             <CheckCheck size={12} /> Mark all read
@@ -221,7 +230,11 @@ export default function MessagesTab() {
                     <div className="flex flex-wrap gap-2 pt-1">
                       {m.status === 'unread' && (
                         <button
-                          onClick={(e) => { e.stopPropagation(); markRead(m.id) }}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            markRead(m.id)
+                            toast.success('Message Approved', 'Message has been marked as approved.')
+                          }}
                           className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest px-3 py-1.5 border border-yellow-400/40 text-yellow-400 hover:bg-yellow-400/10 transition-colors"
                         >
                           <CheckCheck size={11} /> Approve
@@ -229,7 +242,11 @@ export default function MessagesTab() {
                       )}
                       {(m.status === 'unread' || m.status === 'read') && (
                         <button
-                          onClick={(e) => { e.stopPropagation(); markAttended(m.id) }}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            markAttended(m.id)
+                            toast.success('Attended', 'Message has been marked as attended.')
+                          }}
                           className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest px-3 py-1.5 border border-blue-400/40 text-blue-400 hover:bg-blue-400/10 transition-colors"
                         >
                           <CheckCircle2 size={11} /> Attended To

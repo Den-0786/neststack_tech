@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Send, Globe, ExternalLink, Paperclip, X, FileText } from 'lucide-react'
 import { usePortfolio } from '../../context/PortfolioContext'
 import { useMessages } from '../../context/MessagesContext'
+import { useToast } from '../../context/ToastContext'
 import Reveal from '../ui/Reveal'
 import { useTheme } from '../../context/ThemeContext'
 
@@ -14,10 +15,10 @@ export default function ContactSection() {
   const { contact, bio } = data
   const { addMessage } = useMessages()
   const { light } = useTheme()
+  const toast = useToast()
   const fileRef = useRef(null)
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
   const [files, setFiles] = useState([])
-  const [sent, setSent] = useState(false)
   const [fileError, setFileError] = useState('')
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
@@ -40,7 +41,10 @@ export default function ContactSection() {
 
   function handleSubmit(e) {
     e.preventDefault()
-    if (!form.name || !form.email || !form.message) return
+    if (!form.name || !form.email || !form.message) {
+      toast.error('Validation Error', 'Please fill in all required fields.')
+      return
+    }
     addMessage({
       from: form.name,
       email: form.email,
@@ -48,8 +52,7 @@ export default function ContactSection() {
       body: form.message,
       attachments: files.map((f) => ({ name: f.name, size: f.size, type: f.type })),
     })
-    setSent(true)
-    setTimeout(() => setSent(false), 3500)
+    toast.success('Message Sent', 'Your message has been sent successfully. Admin will attend to your request shortly.')
     setForm({ name: '', email: '', subject: '', message: '' })
     setFiles([])
   }
