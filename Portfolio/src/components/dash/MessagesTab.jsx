@@ -200,9 +200,6 @@ export default function MessagesTab() {
                     <p className={`font-mono text-xs mt-0.5 ${m.status === 'unread' ? (light ? 'text-gray-800' : 'text-gray-200') : lbl}`}>
                       {m.subject}
                     </p>
-                    {!isOpen && (
-                      <p className={`font-mono text-[10px] mt-0.5 line-clamp-1 ${lbl}`}>{m.message}</p>
-                    )}
                   </div>
                   <span className={`shrink-0 mt-0.5 ${lbl}`}>
                     {isOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
