@@ -7,7 +7,7 @@ import { useTheme } from '../context/ThemeContext'
 const navLinks = [
   { label: 'Home', to: 'hero' },
   { label: 'About', to: 'about' },
-  { label: 'Projects', to: 'work' },
+  { label: 'Projects', to: 'project' },
   { label: 'Contact', to: 'contact' },
 ]
 
