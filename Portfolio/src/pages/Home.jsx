@@ -5,6 +5,7 @@ import WorkSection from '../components/home/WorkSection'
 import CertificatesSection from '../components/home/CertificatesSection'
 import ContactSection from '../components/home/ContactSection'
 import SiteFooter from '../components/SiteFooter'
+import ScrollToTop from '../components/ScrollToTop'
 import Reveal from '../components/ui/Reveal'
 import { useTheme } from '../context/ThemeContext'
 
@@ -31,6 +32,7 @@ export default function Home() {
         </Reveal>
       </main>
       <SiteFooter />
+      <ScrollToTop />
     </div>
   )
 }
