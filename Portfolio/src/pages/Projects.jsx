@@ -1,5 +1,5 @@
 
-import { ArrowRight, ExternalLink, GitHub } from 'lucide-react'
+import { ArrowRight, ExternalLink, Github } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import Reveal from '../components/ui/Reveal'
@@ -82,7 +82,7 @@ export default function Projects() {
                           rel="noopener noreferrer"
                           className="flex-1 flex items-center justify-center gap-1.5 border border-gray-900 text-gray-900 font-mono text-xs uppercase tracking-widest px-4 py-2.5 hover:bg-gray-100 transition-colors"
                         >
-                          <GitHub size={12} /> View Source Code
+                          <Github size={12} /> View Source Code
                         </a>
                       )}
                     </div>
