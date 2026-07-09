@@ -1,8 +1,8 @@
-import { TrendingUp, Calendar, Globe, Plus } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { usePortfolio } from '../../context/PortfolioContext'
 import { useDashTheme } from '../../context/DashThemeContext'
-import { useState, useEffect } from 'react'
-import { getVisitorStats } from '../../utils/visitorTracking'
+import { useState } from 'react'
+import VisitorStreamgraph from '../ui/VisitorStreamgraph'
 
 const streamLayers = [
   {
@@ -58,11 +58,6 @@ export default function OverviewTab() {
   const light = useDashTheme()
   const [hoveredStream, setHoveredStream] = useState(null)
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0, flip: false })
-  const [visitorStats, setVisitorStats] = useState({ daily: 0, monthly: 0, annual: 0 })
-
-  useEffect(() => {
-    getVisitorStats().then(setVisitorStats)
-  }, [])
 
   const card = light ? 'bg-white border-gray-200' : 'bg-site-card border-site-border'
   const label = light ? 'text-gray-500' : 'text-site-muted'
@@ -70,12 +65,6 @@ export default function OverviewTab() {
   const sub = light ? 'text-gray-500' : 'text-gray-400'
   const accent = light ? 'text-green-700' : 'text-neon'
   const moduleRow = light ? 'border-gray-200' : 'border-site-border'
-
-  const stats = [
-    { label: 'Daily Visits', value: data.bio.name ? visitorStats.daily : 'N/A', change: 'Unique visitors today', icon: TrendingUp },
-    { label: 'Monthly Reach', value: data.bio.name ? visitorStats.monthly : 'N/A', change: 'Last 30 days', icon: Calendar },
-    { label: 'Annual Traffic', value: data.bio.name ? visitorStats.annual : 'N/A', change: 'Last 365 days', icon: Globe },
-  ]
 
   const modules = data.skills.length > 0
     ? data.skills.slice(0, 3).map((skill, i) => ({ name: skill.category, icon: ['❖', '⬡', '⬢'][i % 3] }))
@@ -91,16 +80,7 @@ export default function OverviewTab() {
         </div>
       </div>
 
-      {stats.map(({ label: lbl, value, change, icon: Icon }) => (
-        <div key={lbl} className={`border p-5 ${card}`}>
-          <div className="flex items-start justify-between mb-3">
-            <p className={`font-mono text-xs uppercase tracking-widest ${label}`}>{lbl}</p>
-            <Icon size={16} className={`${accent} opacity-30`} />
-          </div>
-          <p className={`text-4xl font-black mb-1 ${heading}`}>{value}</p>
-          <p className={`font-mono text-xs ${accent}`}>{change}</p>
-        </div>
-      ))}
+      <VisitorStreamgraph />
 
       <div className={`border p-5 ${card}`}>
         <div className="flex items-start justify-between mb-4">
