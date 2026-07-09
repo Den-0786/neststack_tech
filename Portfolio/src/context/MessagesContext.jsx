@@ -6,7 +6,7 @@ export function useMessages() {
   return useContext(MessagesContext)
 }
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:10000'
+const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:10000').replace(/\/$/, '')
 
 export function MessagesProvider({ children }) {
   const [messages, setMessages] = useState([])

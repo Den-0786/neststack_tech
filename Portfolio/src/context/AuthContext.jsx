@@ -4,7 +4,7 @@ import { useToast } from './ToastContext'
 const AuthContext = createContext(null)
 
 const AUTH_KEY = 'neststack_auth'
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:10000'
+const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:10000').replace(/\/$/, '')
 
 export function AuthProvider({ children }) {
   const toast = useToast()

@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:10000/api'
+const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:10000').replace(/\/$/, '') + '/api'
 
 export function getVisitorId() {
   let visitorId = localStorage.getItem('visitor_id')

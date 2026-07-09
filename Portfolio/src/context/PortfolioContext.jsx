@@ -30,7 +30,7 @@ const defaultData = {
   skills: [],
 }
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:10000'
+const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:10000').replace(/\/$/, '')
 
 const PortfolioContext = createContext(null)
 
