@@ -221,14 +221,14 @@ router.get('/visitors/stats', async (req, res) => {
     const monthlyResult = await pool.query(
       `SELECT COUNT(DISTINCT visitor_id) as count 
        FROM visitors 
-       WHERE visit_date >= CURRENT_DATE - INTERVAL '30 days'`
+       WHERE visit_date >= NOW() - INTERVAL '30 days'`
     )
 
     // Annual unique visitors (last 365 days)
     const annualResult = await pool.query(
       `SELECT COUNT(DISTINCT visitor_id) as count 
        FROM visitors 
-       WHERE visit_date >= CURRENT_DATE - INTERVAL '365 days'`
+       WHERE visit_date >= NOW() - INTERVAL '365 days'`
     )
 
     res.json({
