@@ -32,7 +32,7 @@ export default function Navbar() {
               to={to}
               className={({ isActive }) =>
                 `font-mono text-xs tracking-widest uppercase transition-colors ${
-                  isActive ? 'text-accent font-semibold' : 'text-gray-500 hover:text-gray-900'
+                  isActive ? 'text-neon font-semibold' : 'text-gray-500 hover:text-gray-900'
                 }`
               }
             >
@@ -41,7 +41,7 @@ export default function Navbar() {
           ))}
         </div>
 
-        <Link to="/login" className="w-8 h-8 rounded-full overflow-hidden border-2 border-gray-300 hover:border-accent transition-colors">
+        <Link to="/login" className="w-8 h-8 rounded-full overflow-hidden border-2 border-gray-300 hover:border-neon transition-colors">
           <img src={data.bio.avatar || '/portimages/abouttemp.jpeg'} alt={data.bio.name || 'User'} className="w-full h-full object-cover" />
         </Link>
       </nav>
@@ -55,7 +55,7 @@ export default function Navbar() {
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
                 `font-mono text-xs tracking-widest uppercase ${
-                  isActive ? 'text-accent font-semibold' : 'text-gray-500'
+                  isActive ? 'text-neon font-semibold' : 'text-gray-500'
                 }`
               }
             >
