@@ -19,7 +19,8 @@ function fileIcon(type = '') {
 
 function getStatusBadge(status, light) {
   if (status === 'unread')   return { label: 'NEW',      cls: light ? 'bg-neon-light text-white' : 'bg-neon text-black' }
-  if (status === 'read')     return { label: 'APPROVED', cls: 'bg-yellow-400 text-black' }
+  if (status === 'read')     return { label: 'READ', cls: light ? 'bg-yellow-100 text-yellow-800' : 'bg-yellow-400/20 text-yellow-400' }
+  if (status === 'approved') return { label: 'APPROVED', cls: light ? 'bg-green-100 text-green-800' : 'bg-green-400/20 text-green-400' }
   if (status === 'attended') return { label: 'ATTENDED', cls: 'bg-blue-400 text-black' }
   return { label: '', cls: '' }
 }
@@ -27,6 +28,7 @@ function getStatusBadge(status, light) {
 function getStatusDot(status, light) {
   if (status === 'unread')   return light ? 'bg-neon-light' : 'bg-neon'
   if (status === 'read')     return 'bg-yellow-400'
+  if (status === 'approved') return 'bg-green-400'
   if (status === 'attended') return 'bg-blue-400'
   return 'bg-gray-400'
 }
@@ -35,6 +37,7 @@ function cardBorder(msgType, status, light) {
   if (msgType === 'alert') return light ? 'border-red-200' : 'border-red-500/30'
   if (msgType === 'document') return light ? 'border-blue-200' : 'border-blue-500/30'
   if (status === 'attended') return light ? 'border-blue-200' : 'border-blue-500/20'
+  if (status === 'approved') return light ? 'border-green-200' : 'border-green-500/20'
   if (status === 'read') return light ? 'border-yellow-200' : 'border-yellow-500/20'
   return light ? 'border-gray-200' : 'border-site-border'
 }
@@ -42,14 +45,15 @@ function cardBorder(msgType, status, light) {
 const TABS = [
   { id: 'all',       label: 'All',        icon: Mail },
   { id: 'unread',    label: 'Unread',     icon: Clock },
-  { id: 'read',      label: 'Approved',   icon: CheckCheck },
+  { id: 'read',      label: 'Read',       icon: CheckCheck },
+  { id: 'approved',  label: 'Approved',   icon: CheckCircle2 },
   { id: 'attended',  label: 'Attended',   icon: CheckCircle2 },
   { id: 'documents', label: 'Documents',  icon: FileText },
 ]
 
 export default function MessagesTab() {
   const light = useDashTheme()
-  const { messages, markRead, markAttended, markAllRead, deleteMessage, unreadCount, readCount, attendedCount } = useMessages()
+  const { messages, markRead, markAttended, markApproved, markAllRead, deleteMessage, unreadCount, readCount, attendedCount } = useMessages()
   const toast = useToast()
   const [tab, setTab] = useState('all')
   const [expanded, setExpanded] = useState(null)
@@ -67,6 +71,7 @@ export default function MessagesTab() {
     all:       messages,
     unread:    messages.filter((m) => m.status === 'unread'),
     read:      messages.filter((m) => m.status === 'read'),
+    approved:  messages.filter((m) => m.status === 'approved'),
     attended:  messages.filter((m) => m.status === 'attended'),
     documents: docs,
   }
@@ -76,6 +81,7 @@ export default function MessagesTab() {
     all:       messages.length,
     unread:    unreadCount,
     read:      readCount,
+    approved:  messages.filter((m) => m.status === 'approved').length,
     attended:  attendedCount,
     documents: docs.length,
   }
@@ -101,7 +107,8 @@ export default function MessagesTab() {
 
   const emptyLabels = {
     all: 'No messages yet.', unread: 'No unread messages.',
-    read: 'No approved messages.', attended: 'No attended messages.',
+    read: 'No read messages.', approved: 'No approved messages.',
+    attended: 'No attended messages.',
     documents: 'No documents received yet.',
   }
 
@@ -231,19 +238,19 @@ export default function MessagesTab() {
 
                     {/* Action buttons */}
                     <div className="flex flex-wrap gap-2 pt-1">
-                      {m.status === 'unread' && (
+                      {(m.status === 'unread' || m.status === 'read') && (
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
-                            markRead(m.id)
+                            markApproved(m.id)
                             toast.success('Message Approved', 'Message has been marked as approved.')
                           }}
-                          className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest px-3 py-1.5 border border-yellow-400/40 text-yellow-400 hover:bg-yellow-400/10 transition-colors"
+                          className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest px-3 py-1.5 border border-green-400/40 text-green-400 hover:bg-green-400/10 transition-colors"
                         >
                           <CheckCheck size={11} /> Approve
                         </button>
                       )}
-                      {(m.status === 'unread' || m.status === 'read') && (
+                      {m.status !== 'approved' && m.status !== 'attended' && (
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
@@ -252,7 +259,7 @@ export default function MessagesTab() {
                           }}
                           className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest px-3 py-1.5 border border-blue-400/40 text-blue-400 hover:bg-blue-400/10 transition-colors"
                         >
-                          <CheckCircle2 size={11} /> Attended To
+                          <CheckCircle2 size={11} /> Attend To
                         </button>
                       )}
                       <button

@@ -82,6 +82,21 @@ export function MessagesProvider({ children }) {
     }
   }
 
+  async function markApproved(id) {
+    try {
+      const response = await fetch(`${API_BASE}/api/messages/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'approved' }),
+      })
+      if (response.ok) {
+        await fetchMessages()
+      }
+    } catch (error) {
+      console.error('Failed to mark message as approved:', error)
+    }
+  }
+
   async function markAllRead() {
     try {
       const response = await fetch(`${API_BASE}/api/messages/read/all`, {
@@ -114,7 +129,7 @@ export function MessagesProvider({ children }) {
 
   return (
     <MessagesContext.Provider
-      value={{ messages, loading, addMessage, markRead, markAttended, markAllRead, deleteMessage, unreadCount, readCount, attendedCount }}
+      value={{ messages, loading, addMessage, markRead, markAttended, markApproved, markAllRead, deleteMessage, unreadCount, readCount, attendedCount }}
     >
       {children}
     </MessagesContext.Provider>
