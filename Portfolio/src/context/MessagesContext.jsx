@@ -155,11 +155,12 @@ export function MessagesProvider({ children }) {
 
   const unreadCount = messages.filter((m) => m.status === 'unread').length
   const readCount = messages.filter((m) => m.status === 'read').length
+  const approvedCount = messages.filter((m) => m.status === 'approved').length
   const attendedCount = messages.filter((m) => m.status === 'attended').length
 
   return (
     <MessagesContext.Provider
-      value={{ messages, loading, addMessage, markRead, markAttended, markApproved, markUnapproved, markUnattended, markAllRead, deleteMessage, unreadCount, readCount, attendedCount }}
+      value={{ messages, loading, addMessage, markRead, markAttended, markApproved, markUnapproved, markUnattended, markAllRead, deleteMessage, unreadCount, readCount, approvedCount, attendedCount }}
     >
       {children}
     </MessagesContext.Provider>

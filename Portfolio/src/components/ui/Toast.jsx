@@ -72,12 +72,12 @@ export default function Toast({ toast, onClose }) {
             <X size={18} />
           </button>
         </div>
-        <div className="absolute bottom-0 left-0 h-1.5 bg-gray-200">
+        <div className="absolute bottom-0 left-0 h-2 bg-gray-300">
           <div 
-            className="h-full opacity-80 toast-progress-bar"
+            className="h-full toast-progress-bar"
             style={{
               width: '100%',
-              backgroundColor: type === 'success' ? '#16a34a' : type === 'error' ? '#dc2626' : type === 'warning' ? '#ca8a04' : '#2563eb',
+              backgroundColor: type === 'success' ? '#15803d' : type === 'error' ? '#b91c1c' : type === 'warning' ? '#a16207' : '#1d4ed8',
               animationDuration: `${duration}ms`
             }}
           />

@@ -53,7 +53,7 @@ const TABS = [
 
 export default function MessagesTab() {
   const light = useDashTheme()
-  const { messages, markRead, markAttended, markApproved, markUnapproved, markUnattended, markAllRead, deleteMessage, unreadCount, readCount, attendedCount } = useMessages()
+  const { messages, markRead, markAttended, markApproved, markUnapproved, markUnattended, markAllRead, deleteMessage, unreadCount, readCount, approvedCount, attendedCount } = useMessages()
   const toast = useToast()
   const [tab, setTab] = useState('all')
   const [expanded, setExpanded] = useState(null)
@@ -81,7 +81,7 @@ export default function MessagesTab() {
     all:       messages.length,
     unread:    unreadCount,
     read:      readCount,
-    approved:  messages.filter((m) => m.status === 'approved').length,
+    approved:  approvedCount,
     attended:  attendedCount,
     documents: docs.length,
   }
@@ -140,7 +140,7 @@ export default function MessagesTab() {
         {[
           { label: 'All',      value: messages.length, color: accent },
           { label: 'Unread',   value: unreadCount,     color: light ? 'text-neon-light' : 'text-neon' },
-          { label: 'Approved', value: readCount,        color: 'text-yellow-400' },
+          { label: 'Approved', value: approvedCount,    color: 'text-green-400' },
           { label: 'Attended', value: attendedCount,    color: 'text-blue-400' },
           { label: 'Docs',     value: docs.length,      color: light ? 'text-purple-600' : 'text-purple-400' },
         ].map(({ label, value, color }) => (

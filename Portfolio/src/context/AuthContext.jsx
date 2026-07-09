@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { useToast } from './ToastContext'
 
 const AuthContext = createContext(null)
 
@@ -6,6 +7,7 @@ const AUTH_KEY = 'neststack_auth'
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
 export function AuthProvider({ children }) {
+  const toast = useToast()
   const [auth, setAuth] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem(AUTH_KEY)) || { isAuthenticated: false }
@@ -68,6 +70,7 @@ export function AuthProvider({ children }) {
 
   function logout() {
     setAuth({ isAuthenticated: false })
+    toast.success('Logged Out', 'You have been successfully logged out.')
   }
 
   return (
