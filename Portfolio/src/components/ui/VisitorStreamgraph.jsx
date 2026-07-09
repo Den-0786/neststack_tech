@@ -108,7 +108,7 @@ export default function VisitorStreamgraph() {
   // Calculate actual visitor count for current month
   const currentMonthVisitors = Object.entries(currentMonthData)
     .filter(([key]) => key.startsWith('week'))
-    .reduce((sum, [, value]) => sum + (value || 0), 0)
+    .reduce((sum, [, value]) => sum + (parseInt(value, 10) || 0), 0)
   
   // Calculate total weeks from January 1 to current date
   const currentYear = new Date().getFullYear()
