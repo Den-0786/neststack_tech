@@ -1,16 +1,51 @@
 import { useState, useEffect } from 'react'
-import { Linkedin, Instagram, MessageCircle, Facebook, Music } from 'lucide-react'
+import { Linkedin, Instagram, MessageCircle } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
 import { usePortfolio } from '../context/PortfolioContext'
 import Reveal from './ui/Reveal'
+
+// Inline SVG components for missing lucide-react exports
+const FacebookIcon = ({ className, size = 20, strokeWidth = 1.5 }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={strokeWidth}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+  </svg>
+)
+
+const TikTokIcon = ({ className, size = 20, strokeWidth = 1.5 }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={strokeWidth}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+  </svg>
+)
 
 // Social media icon mapping
 const SOCIAL_ICONS = {
   linkedin: Linkedin,
   instagram: Instagram,
   whatsapp: MessageCircle,
-  facebook: Facebook,
-  tiktok: Music,
+  facebook: FacebookIcon,
+  tiktok: TikTokIcon,
 }
 
 export default function SiteFooter() {
@@ -59,7 +94,7 @@ export default function SiteFooter() {
             </h3>
             <p className={`font-mono text-xs leading-relaxed ${textClass}`}>
               Building modern web solutions with cutting-edge technologies. 
-              Focusing on performance, accessibility, and user experience.
+              Focusing on performance, security, accessibility, and user experience.
             </p>
           </div>
           </Reveal>
