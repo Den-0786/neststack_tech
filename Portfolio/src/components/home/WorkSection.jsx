@@ -113,6 +113,22 @@ export default function WorkSection() {
           <p className={`text-sm mb-6 max-w-md mx-auto ${light ? 'text-gray-500' : 'text-gray-400'}`}>
             Have an urgent project or want to collaborate? Grab a spot on my calendar.
           </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 max-w-3xl mx-auto">
+            <div className={`border p-4 ${light ? 'border-gray-200 bg-gray-50' : 'border-site-border bg-site-bg'}`}>
+              <div className={`font-mono font-black text-2xl mb-2 ${light ? 'text-neon-light' : 'text-neon'}`}>01</div>
+              <p className={`font-mono text-xs font-bold ${light ? 'text-gray-900' : 'text-white'}`}>Click the "Book a Call" button below</p>
+            </div>
+            <div className={`border p-4 ${light ? 'border-gray-200 bg-gray-50' : 'border-site-border bg-site-bg'}`}>
+              <div className={`font-mono font-black text-2xl mb-2 ${light ? 'text-neon-light' : 'text-neon'}`}>02</div>
+              <p className={`font-mono text-xs font-bold ${light ? 'text-gray-900' : 'text-white'}`}>Pick a date and time slot from the blue colored circles</p>
+            </div>
+            <div className={`border p-4 ${light ? 'border-gray-200 bg-gray-50' : 'border-site-border bg-site-bg'}`}>
+              <div className={`font-mono font-black text-2xl mb-2 ${light ? 'text-neon-light' : 'text-neon'}`}>03</div>
+              <p className={`font-mono text-xs font-bold ${light ? 'text-gray-900' : 'text-white'}`}>Fill in your contact details to instantly secure your spot</p>
+            </div>
+          </div>
+          
           <a
             href="https://calendly.com/dennisopokuamponsah86/30min"
             target="_blank"
