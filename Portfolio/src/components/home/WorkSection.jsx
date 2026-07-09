@@ -49,6 +49,7 @@ export default function WorkSection() {
                 </span>
                 <span className="font-mono text-xs text-site-muted">DASHBOARD_REV.01</span>
               </div>
+              <div className={`font-mono text-xs uppercase tracking-widest mb-1 ${light ? 'text-neon-light' : 'text-neon'}`}>Website</div>
               <h3 className={`font-bold text-xl mb-2 ${light ? 'text-gray-900' : 'text-white'}`}>{featured.title}</h3>
               <p className={`text-sm mb-4 ${light ? 'text-gray-500' : 'text-gray-400'}`}>{featured.description}</p>
               <div className="flex gap-2">
@@ -89,6 +90,7 @@ export default function WorkSection() {
                       {p.status}
                     </span>
                   </div>
+                  <div className={`font-mono text-[10px] uppercase tracking-widest mb-0.5 ${light ? 'text-neon-light' : 'text-neon'}`}>Website</div>
                   <h4 className={`font-bold text-sm truncate ${light ? 'text-gray-900' : 'text-white'}`}>{p.title}</h4>
                   <p className={`text-xs mt-0.5 line-clamp-2 ${light ? 'text-gray-500' : 'text-gray-400'}`}>{p.description}</p>
                   <div className="flex gap-2 mt-2">
