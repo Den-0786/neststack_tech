@@ -115,8 +115,8 @@ export default function VisitorStreamgraph() {
   const startDate = new Date(currentYear, 0, 1) // January 1
   const currentDate = new Date()
   const diffTime = currentDate - startDate
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) // Use floor instead of ceil
-  const totalWeeks = Math.floor(diffDays / 7)
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) // Use ceil to count new week when it starts
+  const totalWeeks = Math.ceil(diffDays / 7)
   
   // Use actual totals from backend
   const totalVisitorsThisYear = visitorTotals.yearTotal
@@ -139,8 +139,8 @@ export default function VisitorStreamgraph() {
   if (loading) {
     return (
       <div className="w-full space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[1, 2, 3].map((i) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((i) => (
             <div key={i} className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-5 animate-pulse">
               <div className="h-4 bg-gray-700 rounded w-20 mb-2" />
               <div className="h-8 bg-gray-700 rounded w-16 mb-1" />
@@ -174,7 +174,7 @@ export default function VisitorStreamgraph() {
             </div>
             <div>
               <p className="text-purple-300 text-xs font-medium uppercase tracking-wider">Current Month</p>
-              <p className="text-white text-xl md:text-2xl font-bold truncate tracking-tight">{formatNumber(currentMonthVisitors)}</p>
+              <p className="text-white text-xl md:text-2xl font-bold truncate tracking-tight">{currentMonthVisitors}</p>
             </div>
           </div>
           <p className="text-purple-200/60 text-xs">Visitors this month</p>
