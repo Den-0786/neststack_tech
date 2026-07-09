@@ -201,7 +201,7 @@ export default function MessagesTab() {
                       {m.subject}
                     </p>
                     {!isOpen && (
-                      <p className={`font-mono text-[10px] mt-0.5 line-clamp-1 ${lbl}`}>{m.body}</p>
+                      <p className={`font-mono text-[10px] mt-0.5 line-clamp-1 ${lbl}`}>{m.message}</p>
                     )}
                   </div>
                   <span className={`shrink-0 mt-0.5 ${lbl}`}>
@@ -216,7 +216,7 @@ export default function MessagesTab() {
                       From: <span className={heading}>{m.email || m.from_name}</span>
                     </p>
                     <pre className={`font-mono text-xs whitespace-pre-wrap leading-relaxed ${light ? 'text-gray-700' : 'text-gray-300'}`}>
-                      {m.body}
+                      {m.message}
                     </pre>
 
                     {m.attachments?.length > 0 && (
