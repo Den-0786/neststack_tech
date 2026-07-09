@@ -53,27 +53,27 @@ function CustomTooltip({ active, payload, label }) {
   const total = weeks.reduce((sum, p) => sum + p.value, 0)
   
   return (
-    <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl p-4 shadow-2xl">
-      <p className="font-bold text-white text-sm mb-3">{label}</p>
-      <div className="space-y-2">
+    <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl p-3 shadow-2xl">
+      <p className="font-bold text-white text-xs mb-2">{label}</p>
+      <div className="space-y-1.5">
         {weeks.map((entry, index) => (
-          <div key={index} className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
+          <div key={index} className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-1.5">
               <div 
-                className="w-3 h-3 rounded-full" 
+                className="w-2 h-2 rounded-full" 
                 style={{ backgroundColor: entry.color }}
               />
-              <span className="text-white/80 text-xs font-medium">
+              <span className="text-white/80 text-[10px] font-medium">
                 {entry.dataKey.replace('week', 'Week ')}
               </span>
             </div>
-            <span className="text-white text-xs font-bold">{entry.value}</span>
+            <span className="text-white text-[10px] font-bold">{entry.value}</span>
           </div>
         ))}
-        <div className="border-t border-white/20 pt-2 mt-2">
+        <div className="border-t border-white/20 pt-1.5 mt-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-white text-xs font-bold">Total Monthly</span>
-            <span className="text-white text-sm font-bold">{total}</span>
+            <span className="text-white text-[10px] font-bold">Total Monthly</span>
+            <span className="text-white text-xs font-bold">{total}</span>
           </div>
         </div>
       </div>
@@ -119,9 +119,11 @@ export default function VisitorStreamgraph() {
   const totalVisitorsThisYear = visitorTotals.yearTotal
   const totalVisitorsAllMonths = visitorTotals.allTimeTotal
   
-  // Format numbers to show compact display (e.g., 1.5M, 45.2K)
+  // Format numbers to show compact display (e.g., 1.5M, 45.2K) only for large numbers
   const formatNumber = (num) => {
     if (num === 0) return '0'
+    // Don't use compact notation for numbers less than 1000
+    if (num < 1000) return num.toString()
     return new Intl.NumberFormat('en-US', {
       notation: 'compact',
       compactDisplay: 'short',
