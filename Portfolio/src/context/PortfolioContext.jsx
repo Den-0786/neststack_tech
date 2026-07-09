@@ -127,23 +127,28 @@ export function PortfolioProvider({ children }) {
 
   async function updateProject(id, fields) {
     try {
+      const payload = {
+        title: fields.title,
+        description: fields.desc,
+        image: fields.img,
+        tags: fields.tags,
+        github_url: fields.github,
+        live_url: fields.liveUrl || '#',
+        status: fields.status || 'ACTIVE',
+      }
+      console.log('Updating project:', id, payload)
       const response = await fetch(`${API_BASE}/api/portfolio/projects/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: fields.title,
-          description: fields.desc,
-          image: fields.img,
-          tags: fields.tags,
-          github_url: fields.github,
-          live_url: fields.liveUrl || '#',
-          status: fields.status || 'ACTIVE',
-        }),
+        body: JSON.stringify(payload),
       })
+      const result = await response.json()
+      console.log('Update response:', response.status, result)
       if (response.ok) {
         await fetchPortfolio()
         return true
       }
+      console.error('Update failed:', result)
       return false
     } catch (error) {
       console.error('Failed to update project:', error)
