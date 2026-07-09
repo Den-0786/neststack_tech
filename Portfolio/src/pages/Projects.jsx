@@ -1,4 +1,5 @@
 
+import React from 'react'
 import { ArrowRight, ExternalLink } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
