@@ -55,15 +55,6 @@ export default function Toast({ toast, onClose }) {
   return (
     <div className="fixed top-4 right-4 z-50 animate-slide-in">
       <div className={`${style.bg} ${style.border} border rounded-lg shadow-lg p-4 min-w-[320px] max-w-md relative overflow-hidden`}>
-        <style>{`
-          @keyframes shrink {
-            from { width: 100%; }
-            to { width: 0%; }
-          }
-          .progress-bar-${toast.id} {
-            animation: shrink ${duration}ms linear forwards;
-          }
-        `}</style>
         <div className="flex items-start gap-3">
           <Icon className={`${style.icon} shrink-0 mt-0.5`} size={20} />
           <div className="flex-1 min-w-0">
@@ -83,10 +74,11 @@ export default function Toast({ toast, onClose }) {
         </div>
         <div className="absolute bottom-0 left-0 h-1.5 bg-gray-200">
           <div 
-            className={`h-full opacity-80 progress-bar-${toast.id}`}
+            className="h-full opacity-80 toast-progress-bar"
             style={{
               width: '100%',
               backgroundColor: type === 'success' ? '#16a34a' : type === 'error' ? '#dc2626' : type === 'warning' ? '#ca8a04' : '#2563eb',
+              animationDuration: `${duration}ms`
             }}
           />
         </div>

@@ -49,3 +49,17 @@
     }
   }
 }
+
+/* Toast progress bar animation */
+@keyframes toast-shrink {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+.toast-progress-bar {
+  animation: toast-shrink linear forwards;
+}
