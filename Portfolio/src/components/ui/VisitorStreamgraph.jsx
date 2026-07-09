@@ -115,23 +115,25 @@ export default function VisitorStreamgraph() {
   const startDate = new Date(currentYear, 0, 1) // January 1
   const currentDate = new Date()
   const diffTime = currentDate - startDate
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-  const totalWeeks = Math.ceil(diffDays / 7)
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) // Use floor instead of ceil
+  const totalWeeks = Math.floor(diffDays / 7)
   
   // Use actual totals from backend
   const totalVisitorsThisYear = visitorTotals.yearTotal
   const totalVisitorsAllMonths = visitorTotals.allTimeTotal
   
-  // Format numbers to show compact display (e.g., 1.5M, 45.2K) only for large numbers
+  // Format numbers to show compact display (e.g., 1.5M, 45.2K) only for numbers >= 1000
   const formatNumber = (num) => {
     if (num === 0) return '0'
-    // Don't use compact notation for numbers less than 1000
-    if (num < 1000) return num.toString()
-    return new Intl.NumberFormat('en-US', {
-      notation: 'compact',
-      compactDisplay: 'short',
-      maximumFractionDigits: 1
-    }).format(num)
+    // Only use compact notation for numbers >= 1000
+    if (num >= 1000) {
+      return new Intl.NumberFormat('en-US', {
+        notation: 'compact',
+        compactDisplay: 'short',
+        maximumFractionDigits: 1
+      }).format(num)
+    }
+    return num.toString()
   }
   
   if (loading) {
