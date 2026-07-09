@@ -3,6 +3,7 @@ import { Mail, FileText, Trash2, CheckCheck, ChevronDown, ChevronUp, Paperclip, 
 import { useDashTheme } from '../../context/DashThemeContext'
 import { useMessages } from '../../context/MessagesContext'
 import { useToast } from '../../context/ToastContext'
+import ConfirmDialog from '../ui/ConfirmDialog'
 
 function fmtTime(iso) {
   try {
@@ -52,6 +53,7 @@ export default function MessagesTab() {
   const toast = useToast()
   const [tab, setTab] = useState('all')
   const [expanded, setExpanded] = useState(null)
+  const [deleteConfirm, setDeleteConfirm] = useState({ isOpen: false, messageId: null })
 
   const lbl    = light ? 'text-gray-500'  : 'text-site-muted'
   const heading = light ? 'text-gray-900' : 'text-white'
@@ -87,11 +89,14 @@ export default function MessagesTab() {
   }
 
   function handleDelete(id) {
-    if (window.confirm('Are you sure you want to delete this message? This action cannot be undone.')) {
-      deleteMessage(id)
-      toast.success('Message Deleted', 'Message has been removed successfully.')
-      setExpanded(null)
-    }
+    setDeleteConfirm({ isOpen: true, messageId: id })
+  }
+
+  function confirmDelete() {
+    deleteMessage(deleteConfirm.messageId)
+    toast.success('Message Deleted', 'Message has been removed successfully.')
+    setExpanded(null)
+    setDeleteConfirm({ isOpen: false, messageId: null })
   }
 
   const emptyLabels = {
@@ -101,6 +106,7 @@ export default function MessagesTab() {
   }
 
   return (
+    <>
     <div className="px-5 py-5 space-y-4">
 
       {/* Header */}
@@ -267,5 +273,13 @@ export default function MessagesTab() {
         </div>
       )}
     </div>
+      <ConfirmDialog
+        isOpen={deleteConfirm.isOpen}
+        onClose={() => setDeleteConfirm({ isOpen: false, messageId: null })}
+        onConfirm={confirmDelete}
+        title="Delete Message"
+        message="Are you sure you want to delete this message? This action cannot be undone."
+      />
+    </>
   )
 }

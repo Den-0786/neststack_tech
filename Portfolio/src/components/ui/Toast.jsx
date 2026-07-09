@@ -40,7 +40,7 @@ const icons = {
 }
 
 export default function Toast({ toast, onClose }) {
-  const { type = 'info', title, description, duration = 5000 } = toast
+  const { type = 'info', title, description, duration = 10000 } = toast
   const style = toastStyles[type] || toastStyles.info
   const Icon = icons[type] || icons.info
 
@@ -54,7 +54,7 @@ export default function Toast({ toast, onClose }) {
 
   return (
     <div className="fixed top-4 right-4 z-50 animate-slide-in">
-      <div className={`${style.bg} ${style.border} border rounded-lg shadow-lg p-4 min-w-[320px] max-w-md`}>
+      <div className={`${style.bg} ${style.border} border rounded-lg shadow-lg p-4 min-w-[320px] max-w-md relative overflow-hidden`}>
         <div className="flex items-start gap-3">
           <Icon className={`${style.icon} shrink-0 mt-0.5`} size={20} />
           <div className="flex-1 min-w-0">
@@ -72,7 +72,22 @@ export default function Toast({ toast, onClose }) {
             <X size={18} />
           </button>
         </div>
+        <div className="absolute bottom-0 left-0 h-1 bg-gray-300">
+          <div 
+            className="h-full bg-current opacity-50 transition-all ease-linear"
+            style={{
+              width: '100%',
+              animation: `shrink ${duration}ms linear forwards`
+            }}
+          />
+        </div>
       </div>
+      <style>{`
+        @keyframes shrink {
+          from { width: 100%; }
+          to { width: 0%; }
+        }
+      `}</style>
     </div>
   )
 }

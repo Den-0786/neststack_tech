@@ -42,23 +42,23 @@ export default function WorkSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Reveal direction="up" delay={0}>
           <div className={`border group hover:border-neon/40 transition-colors ${light ? 'border-gray-200 bg-white' : 'border-site-border bg-site-card'}`}>
-            <div className="p-5">
-              <div className="flex items-center gap-2 mb-2">
+            <div className="p-6">
+              <div className="flex items-center gap-2 mb-3">
                 <span className={`font-mono text-xs border px-2 py-0.5 ${statusStyle(featured.status)}`}>
                   {featured.status}
                 </span>
                 <span className="font-mono text-xs text-site-muted">DASHBOARD_REV.01</span>
               </div>
-              <div className={`font-mono text-xs uppercase tracking-widest mb-1 ${light ? 'text-neon-light' : 'text-neon'}`}>Website</div>
-              <h3 className={`font-bold text-xl mb-2 ${light ? 'text-gray-900' : 'text-white'}`}>{featured.title}</h3>
-              <p className={`text-sm mb-4 ${light ? 'text-gray-500' : 'text-gray-400'}`}>{featured.description}</p>
-              <div className="flex gap-2">
+              <div className={`font-mono text-xs uppercase tracking-widest mb-2 ${light ? 'text-neon-light' : 'text-neon'}`}>Website</div>
+              <h3 className={`font-bold text-2xl mb-3 ${light ? 'text-gray-900' : 'text-white'}`}>{featured.title}</h3>
+              <p className={`text-sm mb-6 leading-relaxed ${light ? 'text-gray-600' : 'text-gray-400'}`}>{featured.description}</p>
+              <div className="flex gap-3">
                 {featured.live_url && featured.live_url !== '#' && (
                   <a
                     href={featured.live_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`font-mono text-xs flex items-center justify-center gap-1 uppercase tracking-widest px-4 py-2 ${light ? 'bg-gray-900 text-white hover:bg-gray-700' : 'bg-neon text-black hover:bg-neon-dim'}`}
+                    className={`flex-1 font-mono text-sm flex items-center justify-center gap-2 uppercase tracking-widest px-5 py-3 rounded-lg transition-all hover:shadow-lg ${light ? 'bg-gray-900 text-white hover:bg-gray-700' : 'bg-neon text-black hover:bg-neon-dim'}`}
                   >
                     Launch Live App →
                   </a>
@@ -68,7 +68,7 @@ export default function WorkSection() {
                     href={featured.github_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`font-mono text-xs flex items-center justify-center gap-1 uppercase tracking-widest px-4 py-2 border ${light ? 'border-gray-900 text-gray-900 hover:bg-gray-100' : 'border-neon text-neon hover:bg-neon/10'}`}
+                    className={`flex-1 font-mono text-sm flex items-center justify-center gap-2 uppercase tracking-widest px-5 py-3 rounded-lg border transition-all hover:shadow-lg ${light ? 'border-gray-900 text-gray-900 hover:bg-gray-100' : 'border-neon text-neon hover:bg-neon/10'}`}
                   >
                     View Source Code
                   </a>
@@ -82,7 +82,7 @@ export default function WorkSection() {
             {rest.slice(0, 3).map((p, idx) => (
               <Reveal key={p.id} direction="left" delay={idx * 100}>
               <div
-                className={`border p-4 group hover:border-neon/40 transition-colors flex gap-4 items-start ${light ? 'border-gray-200 bg-white' : 'border-site-border bg-site-card'}`}
+                className={`border p-5 group hover:border-neon/40 transition-colors flex gap-4 items-start ${light ? 'border-gray-200 bg-white' : 'border-site-border bg-site-card'}`}
               >
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
