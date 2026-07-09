@@ -53,7 +53,7 @@ const TABS = [
 
 export default function MessagesTab() {
   const light = useDashTheme()
-  const { messages, markRead, markAttended, markApproved, markAllRead, deleteMessage, unreadCount, readCount, attendedCount } = useMessages()
+  const { messages, markRead, markAttended, markApproved, markUnapproved, markUnattended, markAllRead, deleteMessage, unreadCount, readCount, attendedCount } = useMessages()
   const toast = useToast()
   const [tab, setTab] = useState('all')
   const [expanded, setExpanded] = useState(null)
@@ -250,7 +250,31 @@ export default function MessagesTab() {
                           <CheckCheck size={11} /> Approve
                         </button>
                       )}
-                      {m.status !== 'approved' && m.status !== 'attended' && (
+                      {m.status === 'approved' && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            markUnapproved(m.id)
+                            toast.success('Message Disapproved', 'Message has been marked as read.')
+                          }}
+                          className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest px-3 py-1.5 border border-yellow-400/40 text-yellow-400 hover:bg-yellow-400/10 transition-colors"
+                        >
+                          <CheckCheck size={11} /> Disapprove
+                        </button>
+                      )}
+                      {m.status === 'attended' && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            markUnattended(m.id)
+                            toast.success('Unattended', 'Message has been marked as read.')
+                          }}
+                          className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest px-3 py-1.5 border border-yellow-400/40 text-yellow-400 hover:bg-yellow-400/10 transition-colors"
+                        >
+                          <CheckCircle2 size={11} /> Unattend
+                        </button>
+                      )}
+                      {m.status !== 'attended' && (
                         <button
                           onClick={(e) => {
                             e.stopPropagation()

@@ -97,6 +97,36 @@ export function MessagesProvider({ children }) {
     }
   }
 
+  async function markUnapproved(id) {
+    try {
+      const response = await fetch(`${API_BASE}/api/messages/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'read' }),
+      })
+      if (response.ok) {
+        await fetchMessages()
+      }
+    } catch (error) {
+      console.error('Failed to mark message as unapproved:', error)
+    }
+  }
+
+  async function markUnattended(id) {
+    try {
+      const response = await fetch(`${API_BASE}/api/messages/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'read' }),
+      })
+      if (response.ok) {
+        await fetchMessages()
+      }
+    } catch (error) {
+      console.error('Failed to mark message as unattended:', error)
+    }
+  }
+
   async function markAllRead() {
     try {
       const response = await fetch(`${API_BASE}/api/messages/read/all`, {
@@ -129,7 +159,7 @@ export function MessagesProvider({ children }) {
 
   return (
     <MessagesContext.Provider
-      value={{ messages, loading, addMessage, markRead, markAttended, markApproved, markAllRead, deleteMessage, unreadCount, readCount, attendedCount }}
+      value={{ messages, loading, addMessage, markRead, markAttended, markApproved, markUnapproved, markUnattended, markAllRead, deleteMessage, unreadCount, readCount, attendedCount }}
     >
       {children}
     </MessagesContext.Provider>

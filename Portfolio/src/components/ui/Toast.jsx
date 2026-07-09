@@ -40,7 +40,7 @@ const icons = {
 }
 
 export default function Toast({ toast, onClose }) {
-  const { type = 'info', title, description, duration = 5000 } = toast
+  const { type = 'info', title, description, duration = 3000 } = toast
   const style = toastStyles[type] || toastStyles.info
   const Icon = icons[type] || icons.info
 
@@ -54,13 +54,16 @@ export default function Toast({ toast, onClose }) {
 
   return (
     <div className="fixed top-4 right-4 z-50 animate-slide-in">
-      <style>{`
-        @keyframes shrink {
-          from { width: 100%; }
-          to { width: 0%; }
-        }
-      `}</style>
       <div className={`${style.bg} ${style.border} border rounded-lg shadow-lg p-4 min-w-[320px] max-w-md relative overflow-hidden`}>
+        <style>{`
+          @keyframes shrink {
+            from { width: 100%; }
+            to { width: 0%; }
+          }
+          .progress-bar-${toast.id} {
+            animation: shrink ${duration}ms linear forwards;
+          }
+        `}</style>
         <div className="flex items-start gap-3">
           <Icon className={`${style.icon} shrink-0 mt-0.5`} size={20} />
           <div className="flex-1 min-w-0">
@@ -80,11 +83,10 @@ export default function Toast({ toast, onClose }) {
         </div>
         <div className="absolute bottom-0 left-0 h-1.5 bg-gray-200">
           <div 
-            className="h-full opacity-80"
+            className={`h-full opacity-80 progress-bar-${toast.id}`}
             style={{
               width: '100%',
               backgroundColor: type === 'success' ? '#16a34a' : type === 'error' ? '#dc2626' : type === 'warning' ? '#ca8a04' : '#2563eb',
-              animation: `shrink ${duration}ms linear forwards`
             }}
           />
         </div>
