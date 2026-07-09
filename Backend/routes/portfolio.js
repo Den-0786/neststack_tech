@@ -391,4 +391,92 @@ router.get('/traffic/analytics', async (req, res) => {
   }
 })
 
+// Social Links CRUD Operations
+
+// Get all social links
+router.get('/social-links', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM social_links ORDER BY order_index ASC, id ASC'
+    )
+    res.json(result.rows)
+  } catch (error) {
+    console.error('Get social links error:', error)
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
+// Get active social links (for frontend footer)
+router.get('/social-links/active', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM social_links WHERE active = true ORDER BY order_index ASC, id ASC'
+    )
+    res.json(result.rows)
+  } catch (error) {
+    console.error('Get active social links error:', error)
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
+// Add new social link
+router.post('/social-links', async (req, res) => {
+  try {
+    const { platform, url, active = true, order_index = 0 } = req.body
+    
+    const result = await pool.query(
+      'INSERT INTO social_links (platform, url, active, order_index) VALUES ($1, $2, $3, $4) RETURNING *',
+      [platform, url, active, order_index]
+    )
+    
+    res.json(result.rows[0])
+  } catch (error) {
+    console.error('Add social link error:', error)
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
+// Update social link
+router.put('/social-links/:id', async (req, res) => {
+  try {
+    const { platform, url, active, order_index } = req.body
+    const { id } = req.params
+    
+    const result = await pool.query(
+      'UPDATE social_links SET platform = $1, url = $2, active = $3, order_index = $4, updated_at = CURRENT_TIMESTAMP WHERE id = $5 RETURNING *',
+      [platform, url, active, order_index, id]
+    )
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Social link not found' })
+    }
+    
+    res.json(result.rows[0])
+  } catch (error) {
+    console.error('Update social link error:', error)
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
+// Delete social link
+router.delete('/social-links/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    
+    const result = await pool.query(
+      'DELETE FROM social_links WHERE id = $1 RETURNING *',
+      [id]
+    )
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Social link not found' })
+    }
+    
+    res.json({ message: 'Social link deleted successfully' })
+  } catch (error) {
+    console.error('Delete social link error:', error)
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
 module.exports = router

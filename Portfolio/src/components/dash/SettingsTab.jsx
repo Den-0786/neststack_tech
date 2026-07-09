@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Shield, Mail, AlertTriangle, Eye, EyeOff, User, Plus, Trash2, BookOpen, Bell, Globe, Lock, ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { usePortfolio } from '../../context/PortfolioContext'
 import { useDashTheme } from '../../context/DashThemeContext'
@@ -111,17 +111,80 @@ export default function SettingsTab({ onClose }) {
   }
 
   /* ── Socials ── */
-  const [social, setSocial] = useState({
-    linkedin: data.contact.linkedin || '',
-    github: data.contact.twitter || '',
-    instagram: data.contact.instagram || '',
-    facebook: data.contact.facebook || '',
-  })
-  function saveSocial(e) {
-    e.preventDefault()
-    updateContact({ linkedin: social.linkedin, twitter: social.github, instagram: social.instagram, facebook: social.facebook })
-    flash()
+  const [socialLinks, setSocialLinks] = useState([])
+  const [newSocialLink, setNewSocialLink] = useState({ platform: '', url: '' })
+  const [loadingSocialLinks, setLoadingSocialLinks] = useState(true)
+
+  const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:10000').replace(/\/$/, '') + '/api'
+
+  async function fetchSocialLinks() {
+    try {
+      const response = await fetch(`${API_BASE}/portfolio/social-links`)
+      if (response.ok) {
+        const data = await response.json()
+        setSocialLinks(data)
+      }
+    } catch (error) {
+      console.error('Failed to fetch social links:', error)
+    } finally {
+      setLoadingSocialLinks(false)
+    }
   }
+
+  useEffect(() => {
+    fetchSocialLinks()
+  }, [])
+
+  async function addSocialLink(e) {
+    e.preventDefault()
+    try {
+      const response = await fetch(`${API_BASE}/portfolio/social-links`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...newSocialLink, active: true, order_index: socialLinks.length })
+      })
+      if (response.ok) {
+        await fetchSocialLinks()
+        setNewSocialLink({ platform: '', url: '' })
+        flash()
+      }
+    } catch (error) {
+      console.error('Failed to add social link:', error)
+    }
+  }
+
+  async function updateSocialLink(id, updates) {
+    try {
+      const response = await fetch(`${API_BASE}/portfolio/social-links/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates)
+      })
+      if (response.ok) {
+        await fetchSocialLinks()
+        flash()
+      }
+    } catch (error) {
+      console.error('Failed to update social link:', error)
+    }
+  }
+
+  async function deleteSocialLink(id) {
+    if (!window.confirm('Are you sure you want to delete this social link?')) return
+    try {
+      const response = await fetch(`${API_BASE}/portfolio/social-links/${id}`, {
+        method: 'DELETE'
+      })
+      if (response.ok) {
+        await fetchSocialLinks()
+        flash()
+      }
+    } catch (error) {
+      console.error('Failed to delete social link:', error)
+    }
+  }
+
+  const PLATFORMS = ['linkedin', 'instagram', 'whatsapp', 'facebook', 'tiktok']
 
   /* ── Admin credentials ── */
   const [profile, setProfile] = useState({ username: data.bio.name, pin: '', oldPassword: '', password: '' })
@@ -257,22 +320,76 @@ export default function SettingsTab({ onClose }) {
         <div className={`border-t ${divider}`} />
         <div>
           <p className={`font-mono text-[10px] uppercase tracking-widest font-semibold mb-3 ${accent}`}>Social Links</p>
-          <form onSubmit={saveSocial} className="space-y-2">
-            {[
-              { key: 'linkedin',  label: 'LinkedIn',  placeholder: 'https://linkedin.com/in/you' },
-              { key: 'github',    label: 'GitHub',    placeholder: 'https://github.com/you' },
-              { key: 'instagram', label: 'Instagram', placeholder: 'https://instagram.com/you' },
-              { key: 'facebook',  label: 'Facebook',  placeholder: 'https://facebook.com/you' },
-            ].map(({ key, label, placeholder }) => (
-              <div key={key} className={`flex items-center gap-3 border px-3 py-2.5 ${light ? 'border-gray-200' : 'border-site-border'}`}>
-                <span className={`font-mono text-[10px] w-16 shrink-0 ${accent}`}>{label}</span>
-                <input value={social[key]} onChange={(e) => setSocial((s) => ({ ...s, [key]: e.target.value }))} placeholder={placeholder} className={`bg-transparent text-[11px] font-mono flex-1 focus:outline-none ${heading}`} />
-              </div>
-            ))}
-            <button type="submit" className="bg-neon text-black font-mono font-bold text-xs uppercase tracking-widest px-8 py-2.5 hover:bg-neon-dim transition-colors mt-1">
-              Save Socials
-            </button>
-          </form>
+          {loadingSocialLinks ? (
+            <p className={`font-mono text-xs ${lbl}`}>Loading social links...</p>
+          ) : (
+            <div className="space-y-3">
+              {/* Add new social link */}
+              <form onSubmit={addSocialLink} className="space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <select
+                    value={newSocialLink.platform}
+                    onChange={(e) => setNewSocialLink({ ...newSocialLink, platform: e.target.value })}
+                    className={`px-3 py-2 text-sm font-mono border ${inp}`}
+                    required
+                  >
+                    <option value="">Select Platform</option>
+                    {PLATFORMS.map((platform) => (
+                      <option key={platform} value={platform}>
+                        {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    type="url"
+                    value={newSocialLink.url}
+                    onChange={(e) => setNewSocialLink({ ...newSocialLink, url: e.target.value })}
+                    placeholder="https://..."
+                    className={inp_cls}
+                    required
+                  />
+                </div>
+                <button type="submit" className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest bg-neon text-black px-4 py-2 hover:bg-neon-dim transition-colors">
+                  <Plus size={12} /> Add Link
+                </button>
+              </form>
+              
+              {/* List of existing social links */}
+              {socialLinks.length > 0 && (
+                <div className="space-y-2">
+                  {socialLinks.map((link) => (
+                    <div key={link.id} className={`flex items-center gap-2 border px-3 py-2.5 ${light ? 'border-gray-200' : 'border-site-border'}`}>
+                      <span className={`font-mono text-[10px] w-20 shrink-0 capitalize ${accent}`}>
+                        {link.platform}
+                      </span>
+                      <input
+                        type="url"
+                        value={link.url}
+                        onChange={(e) => updateSocialLink(link.id, { url: e.target.value })}
+                        className={`bg-transparent text-[11px] font-mono flex-1 focus:outline-none ${heading}`}
+                      />
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => updateSocialLink(link.id, { active: !link.active })}
+                          className={`text-[10px] font-mono px-2 py-1 rounded ${link.active ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'} hover:opacity-80 transition-opacity`}
+                        >
+                          {link.active ? 'Active' : 'Hidden'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => deleteSocialLink(link.id)}
+                          className="text-red-400/50 hover:text-red-400 transition-colors"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     )

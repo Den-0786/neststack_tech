@@ -85,6 +85,17 @@ CREATE TABLE visitors (
   UNIQUE(visitor_id, visit_date)
 );
 
+-- Social links table for footer social media icons
+CREATE TABLE social_links (
+  id SERIAL PRIMARY KEY,
+  platform VARCHAR(50) NOT NULL,
+  url TEXT NOT NULL,
+  active BOOLEAN DEFAULT true,
+  order_index INTEGER DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Note: Initial admin user will be created via API endpoint
 -- Use POST /api/auth/register to create the first user (if you add registration)
 -- Or insert manually with bcrypt hashed password
