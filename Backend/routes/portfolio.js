@@ -319,6 +319,34 @@ router.get('/visitors/weekly', async (req, res) => {
   }
 })
 
+// Get total visitor counts for year and all time
+router.get('/visitors/totals', async (req, res) => {
+  try {
+    const currentYear = new Date().getFullYear()
+    
+    // Total visitors this year
+    const yearResult = await pool.query(
+      `SELECT COUNT(DISTINCT visitor_id) as count FROM visitors WHERE EXTRACT(YEAR FROM visit_date) = $1`,
+      [currentYear]
+    )
+    const yearTotal = yearResult.rows[0]?.count || 0
+    
+    // Total visitors all time
+    const allTimeResult = await pool.query(
+      `SELECT COUNT(DISTINCT visitor_id) as count FROM visitors`
+    )
+    const allTimeTotal = allTimeResult.rows[0]?.count || 0
+    
+    res.json({
+      yearTotal,
+      allTimeTotal
+    })
+  } catch (error) {
+    console.error('Get visitor totals error:', error)
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
 // Get traffic analytics data with hourly breakdown
 router.get('/traffic/analytics', async (req, res) => {
   try {

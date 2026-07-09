@@ -29,6 +29,22 @@ async function fetchWeeklyVisitorData() {
   }
 }
 
+// Fetch visitor totals from backend
+async function fetchVisitorTotals() {
+  const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:10000').replace(/\/$/, '') + '/api'
+  try {
+    const response = await fetch(`${API_URL}/portfolio/visitors/totals`)
+    if (!response.ok) {
+      throw new Error('Failed to fetch visitor totals')
+    }
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Failed to fetch visitor totals:', error)
+    return { yearTotal: 0, allTimeTotal: 0 }
+  }
+}
+
 // Custom tooltip component
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload || !payload.length) return null
@@ -67,13 +83,18 @@ function CustomTooltip({ active, payload, label }) {
 
 export default function VisitorStreamgraph() {
   const [data, setData] = useState([])
+  const [visitorTotals, setVisitorTotals] = useState({ yearTotal: 0, allTimeTotal: 0 })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function loadData() {
       setLoading(true)
-      const realData = await fetchWeeklyVisitorData()
-      setData(realData)
+      const [weeklyData, totalsData] = await Promise.all([
+        fetchWeeklyVisitorData(),
+        fetchVisitorTotals()
+      ])
+      setData(weeklyData)
+      setVisitorTotals(totalsData)
       setLoading(false)
     }
     
@@ -83,17 +104,20 @@ export default function VisitorStreamgraph() {
   // Calculate statistics
   const currentMonthIndex = Math.min(new Date().getMonth(), data.length - 1)
   const currentMonthData = data[currentMonthIndex] || {}
-  const currentMonthWeeks = Object.keys(currentMonthData)
-    .filter(key => key.startsWith('week'))
-    .length
   
-  const totalVisitorsThisYear = data.reduce((sum, month) => {
-    return sum + Object.entries(month)
-      .filter(([key]) => key.startsWith('week'))
-      .reduce((weekSum, [, value]) => weekSum + (value || 0), 0)
+  // Calculate actual visitor count for current month
+  const currentMonthVisitors = Object.entries(currentMonthData)
+    .filter(([key]) => key.startsWith('week'))
+    .reduce((sum, [, value]) => sum + (value || 0), 0)
+  
+  // Calculate total weeks from January to current month
+  const totalWeeks = data.reduce((sum, month) => {
+    return sum + Object.keys(month).filter(key => key.startsWith('week')).length
   }, 0)
   
-  const totalVisitorsAllMonths = totalVisitorsThisYear
+  // Use actual totals from backend
+  const totalVisitorsThisYear = visitorTotals.yearTotal
+  const totalVisitorsAllMonths = visitorTotals.allTimeTotal
   
   // Format numbers to show compact display (e.g., 1.5M, 45.2K)
   const formatNumber = (num) => {
@@ -132,8 +156,8 @@ export default function VisitorStreamgraph() {
   return (
     <div className="w-full space-y-6">
       {/* Stat Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Current Month Weeks Card */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Current Month Visitors Card */}
         <div className="bg-gradient-to-br from-purple-500/20 to-blue-500/20 backdrop-blur-sm border border-purple-500/30 rounded-xl p-5">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
@@ -143,10 +167,26 @@ export default function VisitorStreamgraph() {
             </div>
             <div>
               <p className="text-purple-300 text-xs font-medium uppercase tracking-wider">Current Month</p>
-              <p className="text-white text-xl md:text-2xl font-bold truncate tracking-tight">{currentMonthWeeks}</p>
+              <p className="text-white text-xl md:text-2xl font-bold truncate tracking-tight">{formatNumber(currentMonthVisitors)}</p>
             </div>
           </div>
-          <p className="text-purple-200/60 text-xs">Active weeks with visitors</p>
+          <p className="text-purple-200/60 text-xs">Visitors this month</p>
+        </div>
+        
+        {/* Total Weeks Card */}
+        <div className="bg-gradient-to-br from-amber-500/20 to-orange-500/20 backdrop-blur-sm border border-amber-500/30 rounded-xl p-5">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center">
+              <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-amber-300 text-xs font-medium uppercase tracking-wider">Total Weeks</p>
+              <p className="text-white text-xl md:text-2xl font-bold truncate tracking-tight">{totalWeeks}</p>
+            </div>
+          </div>
+          <p className="text-amber-200/60 text-xs">Weeks this year</p>
         </div>
         
         {/* Total Visitors This Year Card */}
