@@ -53,7 +53,7 @@ export default function Toast({ toast, onClose }) {
   }, [duration, onClose])
 
   return (
-    <div className="fixed top-4 right-4 z-50 animate-slide-in">
+    <div className="fixed top-4 right-4 z-50 toast-slide-in">
       <div className={`${style.bg} ${style.border} border rounded-lg shadow-lg p-4 min-w-[320px] max-w-md relative overflow-hidden`}>
         <div className="flex items-start gap-3">
           <Icon className={`${style.icon} shrink-0 mt-0.5`} size={20} />
