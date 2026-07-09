@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
+const pool = require('./config/database')
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -20,7 +21,21 @@ app.use('/api/messages', require('./routes/messages'))
 app.use('/api/upload', require('./routes/upload'))
 app.use('/api/contact', require('./routes/contact'))
 
+// Ensure database schema is up to date
+async function ensureSchema() {
+  try {
+    await pool.query(`
+      ALTER TABLE projects 
+      ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'ACTIVE'
+    `)
+    console.log('Database schema verified')
+  } catch (error) {
+    console.error('Error ensuring schema:', error)
+  }
+}
+
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+  await ensureSchema()
   console.log(`Server running on port ${PORT}`)
 })

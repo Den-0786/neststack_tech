@@ -112,14 +112,20 @@ router.post('/projects', async (req, res) => {
 router.put('/projects/:id', async (req, res) => {
   try {
     const { title, description, image, tags, github_url, live_url, status } = req.body
+    console.log('PUT /projects/:id received:', { id: req.params.id, title, description, image, tags, github_url, live_url, status })
+    
+    // Handle tags as array or string
+    const tagsValue = Array.isArray(tags) ? JSON.stringify(tags) : tags
+    
     const result = await pool.query(
       'UPDATE projects SET title = $1, description = $2, image = $3, tags = $4, github_url = $5, live_url = $6, status = $7 WHERE id = $8 RETURNING *',
-      [title, description, image, tags, github_url, live_url, status || 'ACTIVE', req.params.id]
+      [title, description, image, tagsValue, github_url, live_url, status || 'ACTIVE', req.params.id]
     )
+    console.log('Update result:', result.rows[0])
     res.json(result.rows[0])
   } catch (error) {
     console.error('Update project error:', error)
-    res.status(500).json({ error: 'Server error' })
+    res.status(500).json({ error: 'Server error', details: error.message })
   }
 })
 
