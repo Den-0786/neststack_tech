@@ -23,6 +23,7 @@ export default function ProjectsTab() {
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState({ title: '', desc: '', tags: '', github: '', img: '', status: 'ACTIVE' })
+  const [message, setMessage] = useState({ type: '', text: '' })
 
   const filtered = data.projects.filter(
     (p) =>
@@ -37,11 +38,18 @@ export default function ProjectsTab() {
     resetForm()
   }
 
-  function handleEdit(e) {
+  async function handleEdit(e) {
     e.preventDefault()
     if (!form.title) return
-    updateProject(editingId, { ...form, tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean) })
-    resetForm()
+    const success = await updateProject(editingId, { ...form, tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean) })
+    if (success) {
+      setMessage({ type: 'success', text: 'Project updated successfully' })
+      resetForm()
+      setTimeout(() => setMessage({ type: '', text: '' }), 3000)
+    } else {
+      setMessage({ type: 'error', text: 'Failed to update project' })
+      setTimeout(() => setMessage({ type: '', text: '' }), 3000)
+    }
   }
 
   function resetForm() {
@@ -71,6 +79,11 @@ export default function ProjectsTab() {
 
   return (
     <div className="px-5 py-5 space-y-4">
+      {message.text && (
+        <div className={`border px-4 py-2 font-mono text-xs ${message.type === 'success' ? 'bg-green-500/10 border-green-500/30 text-green-400' : 'bg-red-500/10 border-red-500/30 text-red-400'}`}>
+          {message.text}
+        </div>
+      )}
       <div className={`flex items-center gap-2 border px-4 py-3 ${card}`}>
         <Search size={14} className={`shrink-0 ${lbl}`} />
         <input
