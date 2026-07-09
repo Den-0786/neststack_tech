@@ -11,13 +11,12 @@ import { useTheme } from '../context/ThemeContext'
 import { useEffect } from 'react'
 import { trackVisitor } from '../utils/visitorTracking'
 
+export default function Home() {
+  const { light } = useTheme()
 
   useEffect(() => {
     trackVisitor()
   }, [])
-
-export default function Home() {
-  const { light } = useTheme()
   return (
     <div className={`min-h-screen flex flex-col transition-colors duration-700 ${light ? 'bg-gray-50 text-gray-900' : 'bg-gray-900 text-white'}`}>
       <SiteNav />
